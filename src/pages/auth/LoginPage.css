@@ -1,0 +1,60 @@
+ion-content {
+  --background: none;
+  background-image: url('/src/assets/slide.png');
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 400px;
+  margin: auto;
+}
+
+ion-input {
+  --padding-start: 12px; /* Increase padding for better spacing */
+  --padding-end: 12px; /* Increase padding for better spacing */
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  margin-bottom: 12px; /* Add margin bottom to create space between input fields */
+}
+
+ion-button {
+  margin-top: 12px; /* Add margin top to create space between button and input fields */
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 50%; /* Add margin to the top */
+  margin-bottom: 20px; /* Add margin to the bottom */
+}
+
+.logo {
+  width: 125px; /* Adjust the width of the image as needed */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Add space between each input */
+  max-width: 400px;
+  margin: auto;
+}
+
+
+ion-input[type="email"],
+ion-input[type="password"] {
+  width: 80%; /* Adjust the width as needed */
+  margin: auto; /* Center the input */
+  --highlight-color: #Ffffff;
+}
+
+ion-button {
+  --highlight-color: blue; /* Change the color here */
+  margin-left: 9%; /* Center the input */
+}

@@ -1,0 +1,15 @@
+/* Add padding to IonContent to ensure content is pushed down */
+.profile-content {
+    --padding-top: 56px; /* Adjust this value to ensure it's below the header */
+  }
+  
+  /* Style the list items to have a margin and some padding */
+  .profile-list ion-item {
+    margin-bottom: 16px;
+  }
+  
+  /* Style the edit/confirm button */
+  ion-button {
+    margin: 16px;
+  }
+  

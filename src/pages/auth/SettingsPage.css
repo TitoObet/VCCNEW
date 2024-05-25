@@ -1,0 +1,80 @@
+/* Add padding to IonContent to ensure content is pushed down */
+.settings-content {
+    --padding-top: 72px; /* Adjust this value to ensure it's below the header */
+  }
+  
+  /* Style the list items to have a margin and some padding */
+  .settings-list ion-item {
+    margin: 16px 0;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: transparent;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: calc(100% - 32px); /* Ensure the items take full width with some padding */
+    margin-left: 16px; /* Center the items */
+    margin-right: 16px; /* Center the items */
+  }
+  
+  /* Add a hover effect for the list items */
+  .settings-list ion-item:hover {
+    background-color: #e0e0e0;
+  }
+  
+  /* Style the header */
+  ion-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: #fff; /* Ensure header background is visible */
+  }
+  
+  /* Add some padding to the toolbar to position the title and back button */
+  ion-toolbar {
+    padding: 0 16px;
+    --background: #fff; /* Ensure toolbar background is visible */
+  }
+  
+  /* Style the buttons in the toolbar */
+  ion-buttons {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Style the title to be centered */
+  ion-title {
+    flex: 1;
+    text-align: center;
+  }
+  
+  /* Style the profile section */
+  .profile-item {
+    margin-bottom: 16px;
+  }
+  
+  /* Style the profile picture */
+  .profile-picture {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%; /* Make it round */
+    margin-right: 16px;
+  }
+  
+  /* Style the profile info */
+  .profile-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Style the email */
+  .email {
+    font-weight: bold;
+  }
+  
+  /* Ensure that profile section is not highlighted when clicked */
+  .profile-item.activated {
+    background-color: transparent;
+    box-shadow: none;
+  }
+  

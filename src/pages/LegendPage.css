@@ -1,0 +1,18 @@
+.legend-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+  }
+  
+  .legend-list {
+    margin-top: 56px; /* Ensures content starts below the header */
+  }
+  
+  .legend-item {
+    margin-bottom: 20px; /* Adjust the margin to increase or decrease the spacing */
+  }
+  
+  .ion-padding {
+    padding-top: env(safe-area-inset-top);
+  }
+  

@@ -1,0 +1,7 @@
+{
+  "name": "piplup",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

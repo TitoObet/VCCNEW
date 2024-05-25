@@ -1,0 +1,19 @@
+ion-content {
+    --background: none;
+    background-image: url('/src/assets/slide.png');
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .ion-padding {
+    color: white;
+    text-align: center;
+  }
+  
+  ion-button {
+    --highlight-color: #your-color; /* Change the color here */
+    align-self: center;
+    align-items: center;
+  }
+  

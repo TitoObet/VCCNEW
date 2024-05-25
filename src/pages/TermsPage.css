@@ -1,0 +1,35 @@
+.terms-page-container {
+    padding: 20px;
+  }
+  
+  .terms-page-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .terms-section {
+    margin-bottom: 20px;
+  }
+  
+  .terms-section h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .terms-section p {
+    margin-bottom: 10px;
+  }
+  
+  .signature-section {
+    margin-top: 20px;
+  }
+  
+  .signature-section p {
+    margin-bottom: 5px;
+  }
+  
+.terms-background {
+    background-color: rgba(255, 255, 255, 0.5); /* White color with 50% opacity */
+    padding: 20px; /* Adjust padding as needed */
+  }
+  
