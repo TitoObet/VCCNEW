@@ -36,11 +36,36 @@ const LoginPage: React.FC = () => {
           image: result.imageUrl,
           email: result.email,
         };
+        handleFirebaseDatabase(loggedOnUser);
         setUser(loggedOnUser);
         history.push("/map");
       }
     } catch (error) {
       console.error("Google sign-in failed", error);
+    }
+  };
+
+  const handleFirebaseDatabase = async (user: User) => {
+    try {
+      const database = firebase.database();
+      const ref = database.ref("users");
+      const snapshot = await ref.once("value");
+      const users: { [key: string]: User } | null = snapshot.val();
+
+      if (users) {
+        const emailFound = Object.values(users).some(
+          (userr) => userr.email === user.email
+        );
+        if (emailFound) {
+        } else {
+          await ref.push(user);
+        }
+        // setEmailExists(emailFound);
+      } else {
+        await ref.push(user);
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
     }
   };
 
@@ -67,14 +92,14 @@ const LoginPage: React.FC = () => {
       if (user) {
         const loggedOnUser: User = {
           type: UserType.Firebase,
-          name: user.displayName || "", // Handle null or undefined displayName
-          image: "", // Set user image accordingly
-          email: user.email || "", // Handle null or undefined email
+          name: user.displayName || "",
+          image: "",
+          email: user.email || "",
         };
+        handleFirebaseDatabase(loggedOnUser);
         setUser(loggedOnUser);
-        history.push("/map"); // Redirect to map page after successful login
+        history.push("/map");
       } else {
-        // Handle case where currentUser is null
         console.error("User not found after sign in");
         setError("An error occurred while logging in. Please try again later.");
       }
@@ -118,10 +143,25 @@ const LoginPage: React.FC = () => {
             </IonButton>
             {/* Add Google logo and text inside the button */}
             <IonButton onClick={signIn} color="danger">
-               Login with Google <img src={googleLogo} alt="Google Logo" className="google-logo" />
+              Login with Google{" "}
+              <img src={googleLogo} alt="Google Logo" className="google-logo" />
             </IonButton>
           </form>
-          <p style={{ textAlign: 'center', color: 'lightgray', marginTop: '10px' }}>Don't have an account yet? <span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => history.push('/register')}><b>Sign Up</b></span></p>
+          <p
+            style={{
+              textAlign: "center",
+              color: "lightgray",
+              marginTop: "10px",
+            }}
+          >
+            Don't have an account yet?{" "}
+            <span
+              style={{ textDecoration: "underline", cursor: "pointer" }}
+              onClick={() => history.push("/register")}
+            >
+              <b>Sign Up</b>
+            </span>
+          </p>
           {error && <IonText color="danger">{error}</IonText>}
         </center>
       </IonContent>
