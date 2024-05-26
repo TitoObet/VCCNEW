@@ -306,8 +306,8 @@ const MapPage: React.FC = () => {
     }
 
     // Fare matrix for Special Trip
-    const specialBaseFare = 40; // Base fare for the first kilometer
-    const specialAdditionalFarePerKm = 1.5; // Additional fare for every succeeding kilometer
+    const specialBaseFare = tFare?.special || 40; // Base fare for the first kilometer
+    const specialAdditionalFarePerKm = tFare?.succeedKM || 1.5; // Additional fare for every succeeding kilometer
 
     // Calculate total special trip fare
     let totalSpecialFare = specialBaseFare;
