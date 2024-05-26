@@ -25,6 +25,7 @@ import { UserType, useUser } from "../../UserContext";
 
 import termsIcon from "../../assets/imgs/terms.png";
 import legendIcon from "../../assets/imgs/legend.png";
+import tutorialIcon from "../../assets/imgs/tutorial.png";
 import logoutIcon from "../../assets/imgs/logout.png";
 
 const SettingsPage: React.FC = () => {
@@ -59,6 +60,10 @@ const SettingsPage: React.FC = () => {
 
   const handleLegendClick = () => {
     history.push("/legend");
+  };
+
+  const handleTutorialClick = () => {
+    history.push("/tutorial");
   };
 
   const handleLogoutClick = async () => {
@@ -118,6 +123,10 @@ const SettingsPage: React.FC = () => {
         <IonButton onClick={handleLegendClick} className="menu-button">
           <img src={legendIcon} alt="Legend" className="icon-image" />
           <IonLabel>Legend</IonLabel>
+        </IonButton>
+        <IonButton onClick={handleTutorialClick} className="menu-button">
+          <img src={tutorialIcon} alt="Tutorial" className="icon-image" />
+          <IonLabel>Tutorial</IonLabel>
         </IonButton>
         <IonButton onClick={handleLogoutClick} className="menu-button">
           <img src={logoutIcon} alt="Logout" className="icon-image" />

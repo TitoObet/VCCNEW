@@ -227,3 +227,7 @@
 .fare-details p {
   margin: 5px 0;
 }
+
+.add-to-fav-btn {
+  --background: #F4BC1C;
+}

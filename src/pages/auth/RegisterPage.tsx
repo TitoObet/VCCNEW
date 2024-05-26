@@ -15,6 +15,7 @@ import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import "./RegisterPage.css";
 import logoImage from "../../assets/logo.png";
+import questionImage from "../../assets/imgs/question.png";
 
 const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -33,9 +34,19 @@ const RegisterPage: React.FC = () => {
     }
   };
 
+  const handleTutorial = () => {
+    console.log('Tutorial button clicked');
+    history.push('/tutorial');
+  };
+
   return (
     <IonPage>
       <IonContent className="backgroundSignup">
+      <div className="top-right">
+          <IonButton onClick={handleTutorial} className="question-button">
+            <img src={questionImage} alt="Tutorial" />
+          </IonButton>
+        </div>
         <center>
           <div className="logo-container">
             <img src={logoImage} alt="Logo" className="logo" />{" "}

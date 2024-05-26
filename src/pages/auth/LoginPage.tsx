@@ -12,6 +12,7 @@ import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import "./LoginPage.css";
 import logoImage from "../../assets/logo.png";
+import questionImage from "../../assets/imgs/question.png";
 import googleLogo from "../../assets/imgs/google.png"; // Import Google logo
 import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
 import { UserType, useUser, User, UserImp, UserDest } from "../../UserContext";
@@ -21,6 +22,8 @@ import {
   signInWithCredential,
 } from "firebase/auth";
 import { appp } from "../../App";
+
+
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -145,9 +148,19 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  const handleTutorial = () => {
+    console.log('Tutorial button clicked');
+    history.push('/tutorial');
+  };
+
   return (
     <IonPage>
       <IonContent className="backgroundLogin">
+      <div className="top-right">
+          <IonButton onClick={handleTutorial} className="question-button">
+            <img src={questionImage} alt="Tutorial" />
+          </IonButton>
+        </div>
         <center>
           <div className="logo-container">
             <img src={logoImage} alt="Logo" className="logo" />{" "}

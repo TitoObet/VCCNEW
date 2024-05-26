@@ -655,7 +655,7 @@ const MapPage: React.FC = () => {
             >
               <input
                 type="text"
-                placeholder="Starting Location"
+                placeholder="Current Location"
                 className="search-input"
               />
             </StandaloneSearchBox>
@@ -744,9 +744,9 @@ const MapPage: React.FC = () => {
                   </IonButton>
                 </div>
               </div>
-              <div className="alternative-route-container">
+              <div className="add-to-fav">
                 <div className="popup-content">
-                  <IonButton onClick={handleAddToFavorites}>
+                  <IonButton className="add-to-fav-btn" onClick={handleAddToFavorites}>
                     {favoritesMessage}
                   </IonButton>
                 </div>

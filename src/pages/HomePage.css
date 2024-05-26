@@ -8,11 +8,33 @@
     text-align: center;
 }
 
-
-  
   ion-button {
     --highlight-color: #your-color; /* Change the color here */
     align-self: center;
     align-items: center;
   }
+  
+  .top-right {
+    position: absolute;
+    top: 0dv;
+    right: 0px;
+  }
+  
+  .question-button {
+    background-color: transparent !important;
+    padding: 0 !important;
+    width: auto !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  
+  .question-button img {
+    width: 30px; /* Adjust as needed */
+  }
+
+  ion-button.question-button {
+    --background: transparent !important;
+    --box-shadow: none !important;
+  }
+  
   

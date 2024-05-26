@@ -31,6 +31,7 @@ import LegendPage from "./pages/LegendPage";
 import TermsPage from "./pages/TermsPage";
 import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
 import { UserProvider } from "./UserContext";
+import TutorialPage from "./pages/TutorialPage";
 
 setupIonicReact();
 
@@ -66,6 +67,7 @@ const App: React.FC = () => {
             <Route path="/terms" render={() => <TermsPage />} />
             <Route path="/settings" render={() => <SettingsPage />} />
             <Route path="/profile" render={() => <ProfilePage />} />
+            <Route path="/tutorial" render={() => <TutorialPage />} />
             <Route exact path="/map" render={() => <MapPage />} />
             <Route exact path="/home" render={() => <HomePage />} />
             <Route exact path="/" render={() => <Redirect to="/home" />} />
