@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test.e2e": "cypress run",
     "test.unit": "vitest",
-    "lint": "eslint"
+    "lint": "eslint",
+    "android": "npm run build && npx cap copy && npx cap sync && npx cap update && npx cap open android"
   },
   "dependencies": {
     "@capacitor/android": "6.0.0",

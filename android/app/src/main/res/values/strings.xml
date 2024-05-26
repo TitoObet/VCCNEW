@@ -4,4 +4,5 @@
     <string name="title_activity_main">piplup</string>
     <string name="package_name">io.ionic.starter</string>
     <string name="custom_url_scheme">io.ionic.starter</string>
+    <string name="server_client_id">230222097435-udsc92eej60drtvhg48svo1nerhiamhr.apps.googleusercontent.com</string>
 </resources>

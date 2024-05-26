@@ -40,26 +40,35 @@ import ProfilePage from "./pages/auth/ProfilePage";
 import LegendPage from "./pages/LegendPage";
 import TermsPage from "./pages/TermsPage";
 import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
+import { UserProvider } from "./UserContext";
 
 setupIonicReact();
 
 const App: React.FC = () => {
-  GoogleAuth.initialize();
+  GoogleAuth.initialize({
+    clientId:
+      "230222097435-udsc92eej60drtvhg48svo1nerhiamhr.apps.googleusercontent.com",
+    scopes: ["profile", "email"],
+    grantOfflineAccess: true,
+  });
+
   return (
     <IonApp>
-      <IonReactRouter>
-        <IonRouterOutlet>
-          <Route exact path="/login" render={() => <LoginPage />} />
-          <Route path="/register" render={() => <RegisterPage />} />
-          <Route path="/legend" render={() => <LegendPage />} />
-          <Route path="/terms" render={() => <TermsPage />} />
-          <Route path="/settings" render={() => <SettingsPage />} />
-          <Route path="/profile" render={() => <ProfilePage />} />
-          <Route exact path="/map" render={() => <MapPage />} />
-          <Route exact path="/home" render={() => <HomePage />} />
-          <Route exact path="/" render={() => <Redirect to="/home" />} />
-        </IonRouterOutlet>
-      </IonReactRouter>
+      <UserProvider>
+        <IonReactRouter>
+          <IonRouterOutlet>
+            <Route exact path="/login" render={() => <LoginPage />} />
+            <Route path="/register" render={() => <RegisterPage />} />
+            <Route path="/legend" render={() => <LegendPage />} />
+            <Route path="/terms" render={() => <TermsPage />} />
+            <Route path="/settings" render={() => <SettingsPage />} />
+            <Route path="/profile" render={() => <ProfilePage />} />
+            <Route exact path="/map" render={() => <MapPage />} />
+            <Route exact path="/home" render={() => <HomePage />} />
+            <Route exact path="/" render={() => <Redirect to="/home" />} />
+          </IonRouterOutlet>
+        </IonReactRouter>
+      </UserProvider>
     </IonApp>
   );
 };
