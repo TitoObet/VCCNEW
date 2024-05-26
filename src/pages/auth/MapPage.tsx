@@ -11,7 +11,16 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 import "./MapPage.css";
 import { useLoadScript } from "@react-google-maps/api";
-import { IonPopover, IonPage, IonContent, IonButton, IonAlert, IonItem, IonLabel, IonList } from "@ionic/react";
+import {
+  IonPopover,
+  IonPage,
+  IonContent,
+  IonButton,
+  IonAlert,
+  IonItem,
+  IonLabel,
+  IonList,
+} from "@ionic/react";
 import { useHistory } from "react-router-dom";
 import customMapStyle from "./MapStyle";
 import subterminalImage from "../../assets/imgs/sub.png";
@@ -34,6 +43,13 @@ interface TerminalData {
   address: string;
   starting?: string;
   ending?: string;
+}
+
+interface Fare {
+  discount: number;
+  minFare: number;
+  special: number | null;
+  succeedKM: number;
 }
 
 const containerStyle = {
@@ -65,6 +81,10 @@ const MapPage: React.FC = () => {
   });
   const searchBoxRefStart = useRef<google.maps.places.SearchBox | null>(null);
   const searchBoxRefDest = useRef<google.maps.places.SearchBox | null>(null);
+  const [destinationName, setDestinationName] = useState<string>("");
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [tFare, setTFare] = useState<Fare>();
+  const [jFare, setJFare] = useState<Fare>();
   const history = useHistory();
 
   const { user, setUser } = useUser();
@@ -176,8 +196,130 @@ const MapPage: React.FC = () => {
       }
     };
 
+    const fetchFare = () => {
+      try {
+        const firebaseConfig = {
+          apiKey: "AIzaSyCTZJulwDH33CgM_04WKt6CsJ0VvxK35GY",
+          authDomain: "account-saving.firebaseapp.com",
+          databaseURL: "https://account-saving-default-rtdb.firebaseio.com",
+          projectId: "account-saving",
+          storageBucket: "account-saving.appspot.com",
+          messagingSenderId: "230222097435",
+          appId: "1:230222097435:web:ef288e10056dd5f9225cbe",
+        };
+
+        const fareApp = firebase.initializeApp(firebaseConfig, "fareDB");
+        const database = fareApp.database();
+
+        // Firebase database references
+        const jodaFare = database.ref("jodaFare");
+        const todaFare = database.ref("todaFare");
+
+        jodaFare.on("value", (snapshot) => {
+          const jodaFareData = snapshot.val();
+          const fare: Fare = {
+            discount: parseFloat(jodaFareData.jFare.discount),
+            minFare: parseFloat(jodaFareData.jFare.minFare),
+            special: parseFloat(jodaFareData.jFare.special),
+            succeedKM: parseFloat(jodaFareData.jFare.succeedKM),
+          };
+          setJFare(fare);
+        });
+        todaFare.on("value", (snapshot) => {
+          const todaFareData = snapshot.val();
+          const fare: Fare = {
+            discount: parseFloat(todaFareData.todaFare.discount),
+            minFare: parseFloat(todaFareData.todaFare.minFare),
+            special: parseFloat(todaFareData.todaFare.special),
+            succeedKM: parseFloat(todaFareData.todaFare.succeedKM),
+          };
+          setTFare(fare);
+        });
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+
     fetchData();
+    fetchFare();
   }, []);
+
+  useEffect(() => {
+    console.info("Kek***********");
+    console.info(tFare);
+    console.info(jFare);
+  }, [tFare, jFare]);
+
+  // Function to calculate Jeepney fare
+  const calculateJeepneyFare = (
+    directions: google.maps.DirectionsResult | null
+  ): string => {
+    if (!directions) return "";
+
+    // Calculate total distance in kilometers
+    let totalDistance = 0;
+    directions.routes[0].legs.forEach((leg) => {
+      if (leg.distance) {
+        // Check if leg.distance is defined
+        totalDistance += leg.distance.value;
+      }
+    });
+    totalDistance /= 1000; // Convert distance to kilometers
+
+    // Fare matrix for Jeepney
+    const baseFare: number = jFare?.minFare || 13; // Base fare for the first 4 kilometers
+    const additionalFarePerKm: number = jFare?.succeedKM || 1; // Additional fare for every succeeding kilometer
+
+    // Calculate total fare
+    let totalFare = baseFare;
+    if (totalDistance > 4) {
+      totalFare += additionalFarePerKm * (totalDistance - 4);
+    }
+
+    return `₱${totalFare.toFixed(2)}`;
+  };
+
+  // Function to calculate Tricycle fare
+  const calculateTricycleFare = (
+    directions: google.maps.DirectionsResult | null
+  ): { normalFare: string; specialTripFare: string } => {
+    if (!directions) return { normalFare: "", specialTripFare: "" };
+
+    // Calculate total distance in kilometers
+    let totalDistance = 0;
+    directions.routes[0].legs.forEach((leg) => {
+      if (leg.distance) {
+        // Check if leg.distance is defined
+        totalDistance += leg.distance.value;
+      }
+    });
+    totalDistance /= 1000; // Convert distance to kilometers
+
+    // Fare matrix for Tricycle
+    const baseFare = tFare?.minFare || 10; // Base fare for the first kilometer
+    const additionalFarePerKm = tFare?.succeedKM || 1.5; // Additional fare for every succeeding kilometer
+
+    // Calculate total normal fare
+    let totalFare = baseFare;
+    if (totalDistance > 1) {
+      totalFare += additionalFarePerKm * (totalDistance - 1);
+    }
+
+    // Fare matrix for Special Trip
+    const specialBaseFare = 40; // Base fare for the first kilometer
+    const specialAdditionalFarePerKm = 1.5; // Additional fare for every succeeding kilometer
+
+    // Calculate total special trip fare
+    let totalSpecialFare = specialBaseFare;
+    if (totalDistance > 1) {
+      totalSpecialFare += specialAdditionalFarePerKm * (totalDistance - 1);
+    }
+
+    return {
+      normalFare: `₱${totalFare.toFixed(2)}`,
+      specialTripFare: `₱${totalSpecialFare.toFixed(2)}`,
+    };
+  };
 
   const getCurrentPosition = () => {
     return new Promise<{ lat: number; lng: number }>((resolve, reject) => {
@@ -210,7 +352,6 @@ const MapPage: React.FC = () => {
     history.push("/settings");
   };
 
-
   const handleStartChanged = useCallback(() => {
     const places = searchBoxRefStart.current?.getPlaces();
     if (places && places.length) {
@@ -225,10 +366,12 @@ const MapPage: React.FC = () => {
   }, []);
 
   const handleDestChanged = useCallback(() => {
+    setIsFavorite(false);
     const places = searchBoxRefDest.current?.getPlaces();
     if (places && places.length) {
       const place = places[0];
       if (place.geometry && place.geometry.location) {
+        setDestinationName(place.name || "");
         setDestination({
           lat: place.geometry.location.lat(),
           lng: place.geometry.location.lng(),
@@ -307,11 +450,17 @@ const MapPage: React.FC = () => {
     const place = places[0];
     if (!place.geometry || !place.geometry.location) return false;
 
-    const newFavorite: UserDest = {
-      name: place.name,
-      lat: place.geometry.location.lat(),
-      long: place.geometry.location.lng(),
-    };
+    const newFavorite: UserDest = isFavorite
+      ? {
+          name: destinationName,
+          lat: destination.lat,
+          long: destination.lng,
+        }
+      : {
+          name: place.name,
+          lat: place.geometry.location.lat(),
+          long: place.geometry.location.lng(),
+        };
 
     let favorites: UserDest[] = user.favorites || [];
     const index = favorites.findIndex(
@@ -322,18 +471,12 @@ const MapPage: React.FC = () => {
   };
 
   const handleAddToFavorites = () => {
-    if (!user) return;
-
-    const places = searchBoxRefDest.current?.getPlaces();
-    if (!places || !places.length) return;
-
-    const place = places[0];
-    if (!place.geometry || !place.geometry.location) return;
+    if (!user || !destinationName) return;
 
     const newFavorite: UserDest = {
-      name: place.name,
-      lat: place.geometry.location.lat(),
-      long: place.geometry.location.lng(),
+      name: destinationName,
+      lat: destination.lat,
+      long: destination.lng,
     };
 
     let favorites: UserDest[] = user.favorites || [];
@@ -486,18 +629,22 @@ const MapPage: React.FC = () => {
             isOpen={popoverOpen}
             onDidDismiss={() => setPopoverOpen(false)}
           >
-          <IonList>
-            <IonItem>
-              <IonLabel>Ugong</IonLabel>
-            </IonItem>
-            <IonItem>
-              <IonLabel>Marulas</IonLabel>
-            </IonItem>
-            <IonItem>
-              <IonLabel>Tagalag</IonLabel>
-            </IonItem>
-          </IonList>
-        </IonPopover>
+            <IonList>
+              {user?.favorites?.map((item, index) => (
+                <IonItem
+                  key={index}
+                  onClick={() => {
+                    setIsFavorite(true);
+                    setDestination({ lat: item.lat, lng: item.long });
+                    setDestinationName(item.name || "");
+                    setPopoverOpen(false);
+                  }}
+                >
+                  <IonLabel>{item.name}</IonLabel>
+                </IonItem>
+              ))}
+            </IonList>
+          </IonPopover>
 
           <div className="search-box-container">
             <StandaloneSearchBox
@@ -522,6 +669,8 @@ const MapPage: React.FC = () => {
                 type="text"
                 placeholder="Destination"
                 className="search-input"
+                value={destinationName}
+                onChange={(e) => setDestinationName(e.target.value)}
               />
             </StandaloneSearchBox>
           </div>
@@ -618,74 +767,3 @@ const MapPage: React.FC = () => {
 };
 
 export default MapPage;
-
-// Function to calculate Jeepney fare
-const calculateJeepneyFare = (
-  directions: google.maps.DirectionsResult | null
-): string => {
-  if (!directions) return "";
-
-  // Calculate total distance in kilometers
-  let totalDistance = 0;
-  directions.routes[0].legs.forEach((leg) => {
-    if (leg.distance) {
-      // Check if leg.distance is defined
-      totalDistance += leg.distance.value;
-    }
-  });
-  totalDistance /= 1000; // Convert distance to kilometers
-
-  // Fare matrix for Jeepney
-  const baseFare = 13; // Base fare for the first 4 kilometers
-  const additionalFarePerKm = 1; // Additional fare for every succeeding kilometer
-
-  // Calculate total fare
-  let totalFare = baseFare;
-  if (totalDistance > 4) {
-    totalFare += additionalFarePerKm * (totalDistance - 4);
-  }
-
-  return `₱${totalFare.toFixed(2)}`;
-};
-
-// Function to calculate Tricycle fare
-const calculateTricycleFare = (
-  directions: google.maps.DirectionsResult | null
-): { normalFare: string; specialTripFare: string } => {
-  if (!directions) return { normalFare: "", specialTripFare: "" };
-
-  // Calculate total distance in kilometers
-  let totalDistance = 0;
-  directions.routes[0].legs.forEach((leg) => {
-    if (leg.distance) {
-      // Check if leg.distance is defined
-      totalDistance += leg.distance.value;
-    }
-  });
-  totalDistance /= 1000; // Convert distance to kilometers
-
-  // Fare matrix for Tricycle
-  const baseFare = 10; // Base fare for the first kilometer
-  const additionalFarePerKm = 1.5; // Additional fare for every succeeding kilometer
-
-  // Calculate total normal fare
-  let totalFare = baseFare;
-  if (totalDistance > 1) {
-    totalFare += additionalFarePerKm * (totalDistance - 1);
-  }
-
-  // Fare matrix for Special Trip
-  const specialBaseFare = 40; // Base fare for the first kilometer
-  const specialAdditionalFarePerKm = 1.5; // Additional fare for every succeeding kilometer
-
-  // Calculate total special trip fare
-  let totalSpecialFare = specialBaseFare;
-  if (totalDistance > 1) {
-    totalSpecialFare += specialAdditionalFarePerKm * (totalDistance - 1);
-  }
-
-  return {
-    normalFare: `₱${totalFare.toFixed(2)}`,
-    specialTripFare: `₱${totalSpecialFare.toFixed(2)}`,
-  };
-};
