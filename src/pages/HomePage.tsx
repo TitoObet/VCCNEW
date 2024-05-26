@@ -25,7 +25,8 @@ const HomePage: React.FC = () => {
       <div className="logo-container">
         <img src={logoImage} alt="Logo" className="logo" /> {/* Add the logo image */}
       </div>
-        <h1>Welcome to VCC</h1>
+        <h1>Welcome to</h1>
+        <h3><b>Valenzuela Commuting Companion</b></h3>
         <p>Please login or sign up to continue.</p>
         <IonButton expand="block" onClick={handleLogin}>Login</IonButton>
         <IonButton expand="block" onClick={handleRegister}>Sign Up</IonButton> {/* New button for registration */}

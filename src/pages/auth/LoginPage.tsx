@@ -12,6 +12,7 @@ import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import "./LoginPage.css";
 import logoImage from "../../assets/logo.png";
+import googleLogo from "../../assets/imgs/google.png"; // Import Google logo
 import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
 import { UserType, useUser, User } from "../../UserContext";
 
@@ -115,7 +116,10 @@ const LoginPage: React.FC = () => {
             <IonButton type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Logging In..." : "Login"}
             </IonButton>
-            <IonButton onClick={signIn} color="danger">Login with Google</IonButton>
+            {/* Add Google logo and text inside the button */}
+            <IonButton onClick={signIn} color="danger">
+               Login with Google <img src={googleLogo} alt="Google Logo" className="google-logo" />
+            </IonButton>
           </form>
           <p style={{ textAlign: 'center', color: 'lightgray', marginTop: '10px' }}>Don't have an account yet? <span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => history.push('/register')}><b>Sign Up</b></span></p>
           {error && <IonText color="danger">{error}</IonText>}

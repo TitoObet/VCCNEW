@@ -15,9 +15,9 @@ const LegendPage: React.FC = () => {
     { label: "Current Location", src: currentImage },
     { label: "Destination", src: destinationImage },
     { label: "Jeepney Main Terminal", src: jeepImage },
-    { label: "Tricycle Main Terminal", src: tricycleImage },
     { label: "Loading Zones (Jeepneys)", src: loadZoneImage },
-    { label: "Subterminal (Tricycles)", src: subterminalImage },
+    { label: "Subterminal (Tricycle)", src: subterminalImage },
+    { label: "Tricycle Main Terminal", src: tricycleImage }
   ];
 
   return (

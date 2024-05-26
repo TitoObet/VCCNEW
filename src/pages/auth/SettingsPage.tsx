@@ -8,21 +8,24 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
-  IonList,
-  IonItem,
-  IonLabel,
   IonAvatar,
   IonRouterLink,
+  IonLabel,
+  IonCard,
+  IonCardContent,
 } from "@ionic/react";
 import { arrowBack } from "ionicons/icons";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
 import "firebase/compat/auth";
 import "./SettingsPage.css"; // Import the CSS file
 import userDefaultImage from "../../assets/imgs/user.png";
 import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
 import { UserType, useUser } from "../../UserContext";
+
+import termsIcon from "../../assets/imgs/terms.png";
+import legendIcon from "../../assets/imgs/legend.png";
+import logoutIcon from "../../assets/imgs/logout.png";
 
 const SettingsPage: React.FC = () => {
   const history = useHistory();
@@ -83,7 +86,7 @@ const SettingsPage: React.FC = () => {
   };
 
   return (
-    <IonPage>
+    <IonPage className="settings-page">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -95,31 +98,31 @@ const SettingsPage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="settings-content">
-        <IonList className="settings-list">
-          {/* Profile Section */}
-          <IonRouterLink routerLink="/profile" className="profile-item">
-            <IonItem lines="none">
-              <IonAvatar slot="start">
-                <img src={userImage} alt="Profile" />
-              </IonAvatar>
-              <IonLabel>
-                <h2>{userName}</h2>
-                <p>{userEmail}</p>
-              </IonLabel>
-            </IonItem>
-          </IonRouterLink>
+        <IonCard className="profile-card">
+          <IonCardContent className="profile-content">
+            <IonAvatar slot="start">
+              <img src={userImage} alt="Profile" />
+            </IonAvatar>
+            <IonLabel>
+              <h2><b>{userName}</b></h2>
+              <p>{userEmail}</p>
+            </IonLabel>
+          </IonCardContent>
+        </IonCard>
 
-          {/* Other Settings */}
-          <IonItem button onClick={handleTermsClick}>
-            <IonLabel>Terms and Conditions</IonLabel>
-          </IonItem>
-          <IonItem button onClick={handleLegendClick}>
-            <IonLabel>Legend</IonLabel>
-          </IonItem>
-          <IonItem button onClick={handleLogoutClick}>
-            <IonLabel>Logout</IonLabel>
-          </IonItem>
-        </IonList>
+        {/* Other Settings */}
+        <IonButton onClick={handleTermsClick} className="menu-button">
+          <img src={termsIcon} alt="Terms" className="icon-image" />
+          <IonLabel>Terms and Conditions</IonLabel>
+        </IonButton>
+        <IonButton onClick={handleLegendClick} className="menu-button">
+          <img src={legendIcon} alt="Legend" className="icon-image" />
+          <IonLabel>Legend</IonLabel>
+        </IonButton>
+        <IonButton onClick={handleLogoutClick} className="menu-button">
+          <img src={logoutIcon} alt="Logout" className="icon-image" />
+          <IonLabel>Logout</IonLabel>
+        </IonButton>
       </IonContent>
     </IonPage>
   );

@@ -13,7 +13,7 @@ const TermsPage: React.FC = () => {
           <IonTitle>Terms and Conditions</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <IonContent className="terms-content">
         <br></br>
       <div className="terms-background"> {/* Add this div */}
         <div className="terms-page-container">

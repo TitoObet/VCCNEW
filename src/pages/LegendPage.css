@@ -1,7 +1,7 @@
 .legend-list {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Space between cards */
+  gap: 10px; /* Space between cards */
 }
 
 .legend-card {
@@ -15,6 +15,8 @@
   width: 100%; /* Make card take full width */
   max-width: 400px; /* Optional: Set a max-width to cards for better appearance on large screens */
   margin: 0 auto; /* Center the card horizontally */
+  background: linear-gradient(135deg, #bdecff 0%, #6bc8ee 100%); /* Light blue gradient background */
+  color: white; /* Text color */
 }
 
 .legend-title {

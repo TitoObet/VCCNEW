@@ -53,9 +53,17 @@ ion-input[type="password"] {
   width: 80%; /* Adjust the width as needed */
   margin: auto; /* Center the input */
   --highlight-color: #Ffffff;
+  color: #Ffffff;
+  font-size: large;
 }
 
 ion-button {
   --highlight-color: blue; /* Change the color here */
   margin-left: 9%; /* Center the input */
+}
+
+.google-logo {
+  width: 20px; /* Adjust the width as needed */
+  height: auto; /* Maintain aspect ratio */
+  margin-left: 10px;
 }
