@@ -15,6 +15,7 @@ import tricycleImage from "../../assets/imgs/tricycle.png";
 import currentImage from "../../assets/imgs/current.png";
 import destinationImage from "../../assets/imgs/destination.png";
 import settingsImage from "../../assets/imgs/settings.png";
+import favoritesImage from "../../assets/imgs/favorites.png";
 
 interface TerminalData {
   tag: string,
@@ -358,6 +359,11 @@ const MapPage: React.FC = () => {
                 <img src={currentImage} alt="Current Location" />
               </div>
             </div>
+            <div className="favorites-button-container">
+                <div className="favorites-button">
+                <img src={favoritesImage} alt="Current Location" />
+              </div>
+            </div>
           </div>
           <div className="search-box-container">
             <StandaloneSearchBox
@@ -415,6 +421,7 @@ const MapPage: React.FC = () => {
     <div className="alternative-route-container">
       <div className="popup-content">
         <IonButton onClick={handleAlternativeRoute}>Alternative Route</IonButton>
+        <IonButton onClick={handleAlternativeRoute}>Add to Favorites</IonButton>
       </div>
     </div>
   </div>
