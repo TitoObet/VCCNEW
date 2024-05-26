@@ -11,7 +11,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 import "./MapPage.css";
 import { useLoadScript } from "@react-google-maps/api";
-import { IonPage, IonContent, IonButton, IonAlert } from "@ionic/react";
+import { IonPopover, IonPage, IonContent, IonButton, IonAlert, IonItem, IonLabel, IonList } from "@ionic/react";
 import { useHistory } from "react-router-dom";
 import customMapStyle from "./MapStyle";
 import subterminalImage from "../../assets/imgs/sub.png";
@@ -210,6 +210,7 @@ const MapPage: React.FC = () => {
     history.push("/settings");
   };
 
+
   const handleStartChanged = useCallback(() => {
     const places = searchBoxRefStart.current?.getPlaces();
     if (places && places.length) {
@@ -294,6 +295,8 @@ const MapPage: React.FC = () => {
       );
     }
   };
+
+  const [popoverOpen, setPopoverOpen] = useState(false);
 
   const checkIfDestIsAlreadyFavorited = (): boolean => {
     if (!user) return false;
@@ -470,12 +473,32 @@ const MapPage: React.FC = () => {
                 <img src={currentImage} alt="Current Location" />
               </div>
             </div>
-            <div className="favorites-button-container">
-              <div className="favorites-button">
-                <img src={favoritesImage} alt="Current Location" />
+            <div className="favorites-btn-container">
+              <div
+                className="favorites-btn"
+                onClick={() => setPopoverOpen(true)}
+              >
+                <img src={favoritesImage} alt="Favorites" />
               </div>
             </div>
           </div>
+          <IonPopover
+            isOpen={popoverOpen}
+            onDidDismiss={() => setPopoverOpen(false)}
+          >
+          <IonList>
+            <IonItem>
+              <IonLabel>Ugong</IonLabel>
+            </IonItem>
+            <IonItem>
+              <IonLabel>Marulas</IonLabel>
+            </IonItem>
+            <IonItem>
+              <IonLabel>Tagalag</IonLabel>
+            </IonItem>
+          </IonList>
+        </IonPopover>
+
           <div className="search-box-container">
             <StandaloneSearchBox
               onLoad={(ref) => {
