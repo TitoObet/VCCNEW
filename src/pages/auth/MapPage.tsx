@@ -236,9 +236,9 @@ const MapPage: React.FC = () => {
     }
   }, []);
 
-  const triggerChangeTextMessage = () => {
+  const triggerChangeTextMessage = (param: boolean | null = null) => {
     const isFavorited = checkIfDestIsAlreadyFavorited();
-    if (isFavorited) {
+    if ((param === null && isFavorited) || param === false) {
       setFavoritesMessage("Remove from Favorites");
     } else {
       setFavoritesMessage("Add to Favorites");
@@ -360,10 +360,9 @@ const MapPage: React.FC = () => {
             ? "Successfully removed from favorites"
             : "Successfully added to favorites",
         });
+        triggerChangeTextMessage(alreadyFavorited);
         setShowAlert(true);
         console.info("Successfully updated favorites");
-
-        triggerChangeTextMessage();
       })
       .catch((error) => {
         console.error("Error updating favorites: ", error);
