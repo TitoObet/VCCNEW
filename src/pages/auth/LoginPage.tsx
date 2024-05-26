@@ -14,7 +14,13 @@ import "./LoginPage.css";
 import logoImage from "../../assets/logo.png";
 import googleLogo from "../../assets/imgs/google.png"; // Import Google logo
 import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
-import { UserType, useUser, User } from "../../UserContext";
+import { UserType, useUser, User, UserImp, UserDest } from "../../UserContext";
+import {
+  GoogleAuthProvider,
+  getAuth,
+  signInWithCredential,
+} from "firebase/auth";
+import { appp } from "../../App";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -25,17 +31,27 @@ const LoginPage: React.FC = () => {
 
   const { setUser } = useUser();
 
+  const auth = getAuth(appp);
+
   const signIn = async () => {
     try {
       const result = await GoogleAuth.signIn();
       console.info("result", result);
       if (result) {
-        const loggedOnUser: User = {
-          type: UserType.GoogleAuth,
-          name: result.name,
-          image: result.imageUrl,
-          email: result.email,
-        };
+        const credential = GoogleAuthProvider.credential(
+          result.authentication.idToken
+        );
+        const loggedOnUser: UserImp = new UserImp(
+          null,
+          UserType.GoogleAuth,
+          result.name,
+          result.imageUrl,
+          result.email,
+          null
+        );
+
+        await signInWithCredential(auth, credential);
+
         handleFirebaseDatabase(loggedOnUser);
         setUser(loggedOnUser);
         history.push("/map");
@@ -45,24 +61,38 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  const handleFirebaseDatabase = async (user: User) => {
+  const handleFirebaseDatabase = async (user: UserImp) => {
     try {
       const database = firebase.database();
       const ref = database.ref("users");
       const snapshot = await ref.once("value");
-      const users: { [key: string]: User } | null = snapshot.val();
+      const users: { [key: string]: UserImp } | null = snapshot.val();
 
+      let userKey: string | null = null;
+      let userFavorites: UserDest[] | null = null;
       if (users) {
-        const emailFound = Object.values(users).some(
-          (userr) => userr.email === user.email
-        );
-        if (emailFound) {
+        const emailFound = Object.keys(users).some((key) => {
+          if (users[key].email === user.email) {
+            userKey = key;
+            userFavorites = users[key].favorites;
+            return true;
+          }
+          return false;
+        });
+
+        if (!emailFound) {
+          const newUser = await ref.push(user);
+          user.key = newUser.key;
+          setUser(user);
         } else {
-          await ref.push(user);
+          user.favorites = userFavorites;
+          user.key = userKey;
+          setUser(user);
         }
-        // setEmailExists(emailFound);
       } else {
-        await ref.push(user);
+        const newUser = await ref.push(user);
+        user.key = newUser.key;
+        setUser(user);
       }
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -77,9 +107,7 @@ const LoginPage: React.FC = () => {
       setError("Enter both email and password");
       return; // Exit early if fields are not filled
     }
-
     setIsSubmitting(true); // Set loading state while submitting
-
     try {
       await firebase.auth().signInWithEmailAndPassword(email, password);
 
@@ -90,12 +118,14 @@ const LoginPage: React.FC = () => {
 
       const user = firebase.auth().currentUser;
       if (user) {
-        const loggedOnUser: User = {
-          type: UserType.Firebase,
-          name: user.displayName || "",
-          image: "",
-          email: user.email || "",
-        };
+        const loggedOnUser: UserImp = new UserImp(
+          null,
+          UserType.Firebase,
+          user.displayName || "",
+          "",
+          user.email || "",
+          null
+        );
         handleFirebaseDatabase(loggedOnUser);
         setUser(loggedOnUser);
         history.push("/map");

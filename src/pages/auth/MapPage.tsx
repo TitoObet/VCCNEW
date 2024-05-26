@@ -1,12 +1,19 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { GoogleMap, Marker, InfoWindow, StandaloneSearchBox, DirectionsRenderer, TrafficLayer } from '@react-google-maps/api';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/database';
-import './MapPage.css';
-import { useLoadScript } from '@react-google-maps/api';
-import { IonPage, IonContent, IonButton, IonAlert } from '@ionic/react';
-import { useHistory } from 'react-router-dom';
-import customMapStyle from './MapStyle';
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import {
+  GoogleMap,
+  Marker,
+  InfoWindow,
+  StandaloneSearchBox,
+  DirectionsRenderer,
+  TrafficLayer,
+} from "@react-google-maps/api";
+import firebase from "firebase/compat/app";
+import "firebase/compat/database";
+import "./MapPage.css";
+import { useLoadScript } from "@react-google-maps/api";
+import { IonPage, IonContent, IonButton, IonAlert } from "@ionic/react";
+import { useHistory } from "react-router-dom";
+import customMapStyle from "./MapStyle";
 import subterminalImage from "../../assets/imgs/sub.png";
 import loadZoneImage from "../../assets/imgs/load.png";
 import jeepImage from "../../assets/imgs/jeep.png";
@@ -16,10 +23,11 @@ import currentImage from "../../assets/imgs/current.png";
 import destinationImage from "../../assets/imgs/destination.png";
 import settingsImage from "../../assets/imgs/settings.png";
 import favoritesImage from "../../assets/imgs/favorites.png";
+import { UserDest, useUser } from "../../UserContext";
 
 interface TerminalData {
-  tag: string,
-  id: string,
+  tag: string;
+  id: string;
   name: string;
   latitude: number;
   longitude: number;
@@ -29,30 +37,38 @@ interface TerminalData {
 }
 
 const containerStyle = {
-  width: '100%',
-  height: '100%',
+  width: "100%",
+  height: "100%",
 };
 
 const MapPage: React.FC = () => {
   const [markers, setMarkers] = useState<TerminalData[]>([]);
-  const [selectedMarker, setSelectedMarker] = useState<TerminalData | null>(null);
+  const [selectedMarker, setSelectedMarker] = useState<TerminalData | null>(
+    null
+  );
   const [currentLocation, setCurrentLocation] = useState({ lat: 0, lng: 0 });
   const [destination, setDestination] = useState({ lat: 0, lng: 0 });
-  const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
-  const [trafficNote, setTrafficNote] = useState('');
+  const [directions, setDirections] =
+    useState<google.maps.DirectionsResult | null>(null);
+  const [alertMessage, setAlertMessage] = useState({
+    title: "",
+    content: "",
+  });
+  const [favoritesMessage, setFavoritesMessage] = useState("Add to Favorites");
   const [showAlert, setShowAlert] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [showAlternativeRoute, setShowAlternativeRoute] = useState(false);
   const [fareEstimate, setFareEstimate] = useState<string | null>(null);
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: "AIzaSyCinM8IcwmrFy5Y4ibwLB4_kHaGQNmsddE",
-    libraries: ['places'],
+    libraries: ["places"],
   });
   const searchBoxRefStart = useRef<google.maps.places.SearchBox | null>(null);
   const searchBoxRefDest = useRef<google.maps.places.SearchBox | null>(null);
   const history = useHistory();
+
+  const { user, setUser } = useUser();
   useEffect(() => {
-    console.log("Dito ***********");
     const fetchData = async () => {
       try {
         // Firebase configuration
@@ -63,25 +79,25 @@ const MapPage: React.FC = () => {
           projectId: "dropoff-table",
           storageBucket: "dropoff-table.appspot.com",
           messagingSenderId: "60054294451",
-          appId: "1:60054294451:web:91f77c26a9115462dc05c6"
+          appId: "1:60054294451:web:91f77c26a9115462dc05c6",
         };
 
-        const mapApp = firebase.initializeApp(firebaseConfig, 'mapDB');
+        const mapApp = firebase.initializeApp(firebaseConfig, "mapDB");
         const database = mapApp.database();
 
         // Firebase database references
-        const jodaterminalRef = database.ref('jodaterminal'); 
-        const loadZonesRef = database.ref('loadZones'); 
-        const subsubterminalRef = database.ref('subsubterminals'); 
-        const terminalRef = database.ref('terminals'); 
+        const jodaterminalRef = database.ref("jodaterminal");
+        const loadZonesRef = database.ref("loadZones");
+        const subsubterminalRef = database.ref("subsubterminals");
+        const terminalRef = database.ref("terminals");
 
         // Function to update markers
         const updateMarkers = (newData: TerminalData[]) => {
-          setMarkers(prevMarkers => [...prevMarkers, ...newData]);
+          setMarkers((prevMarkers) => [...prevMarkers, ...newData]);
         };
 
         // Fetch data from Firebase
-        jodaterminalRef.on('value', (snapshot) => {
+        jodaterminalRef.on("value", (snapshot) => {
           const data: TerminalData[] = [];
           snapshot.forEach((childSnapshot) => {
             const childData = childSnapshot.val();
@@ -99,7 +115,7 @@ const MapPage: React.FC = () => {
           });
           updateMarkers(data);
         });
-        loadZonesRef.on('value', (snapshot) => {
+        loadZonesRef.on("value", (snapshot) => {
           const data: TerminalData[] = [];
           snapshot.forEach((childSnapshot) => {
             const childData = childSnapshot.val();
@@ -115,7 +131,7 @@ const MapPage: React.FC = () => {
           });
           updateMarkers(data);
         });
-        subsubterminalRef.on('value', (snapshot) => {
+        subsubterminalRef.on("value", (snapshot) => {
           const data: TerminalData[] = [];
           snapshot.forEach((childSnapshot) => {
             const childData = childSnapshot.val();
@@ -133,7 +149,7 @@ const MapPage: React.FC = () => {
           });
           updateMarkers(data);
         });
-        terminalRef.on('value', (snapshot) => {
+        terminalRef.on("value", (snapshot) => {
           const data: TerminalData[] = [];
           snapshot.forEach((childSnapshot) => {
             const childData = childSnapshot.val();
@@ -155,12 +171,11 @@ const MapPage: React.FC = () => {
         // Get current user position
         const position = await getCurrentPosition();
         setCurrentLocation(position);
-      }
-      catch (error) {
-        console.error('Error fetching data:', error);
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
     };
-    
+
     fetchData();
   }, []);
 
@@ -170,11 +185,11 @@ const MapPage: React.FC = () => {
         (position) => {
           resolve({
             lat: position.coords.latitude,
-            lng: position.coords.longitude
+            lng: position.coords.longitude,
           });
         },
         (error) => {
-          console.error('Error getting current position:', error);
+          console.error("Error getting current position:", error);
           reject(error);
         }
       );
@@ -187,13 +202,12 @@ const MapPage: React.FC = () => {
         setCurrentLocation(position);
       })
       .catch((error) => {
-        console.error('Error getting current location:', error);
+        console.error("Error getting current location:", error);
       });
   };
-  
 
   const handleSettingsClick = () => {
-    history.push('/settings');
+    history.push("/settings");
   };
 
   const handleStartChanged = useCallback(() => {
@@ -222,7 +236,17 @@ const MapPage: React.FC = () => {
     }
   }, []);
 
+  const triggerChangeTextMessage = () => {
+    const isFavorited = checkIfDestIsAlreadyFavorited();
+    if (isFavorited) {
+      setFavoritesMessage("Remove from Favorites");
+    } else {
+      setFavoritesMessage("Add to Favorites");
+    }
+  };
+
   const handleStartJourney = () => {
+    triggerChangeTextMessage();
     if (currentLocation && destination) {
       const directionsService = new google.maps.DirectionsService();
       directionsService.route(
@@ -241,21 +265,25 @@ const MapPage: React.FC = () => {
             const legs = result.routes[0].legs;
             if (legs && legs.length > 0) {
               const trafficSpeedEntries = legs[0].traffic_speed_entry;
-              let trafficNote = 'Traffic Conditions: ';
+              let trafficNote = "Traffic Conditions: ";
               if (trafficSpeedEntries && trafficSpeedEntries.length > 0) {
-                const speeds = trafficSpeedEntries.map(entry => entry.speed);
-                const averageSpeed = speeds.reduce((acc, speed) => acc + speed, 0) / speeds.length;
+                const speeds = trafficSpeedEntries.map((entry) => entry.speed);
+                const averageSpeed =
+                  speeds.reduce((acc, speed) => acc + speed, 0) / speeds.length;
                 if (averageSpeed < 20) {
-                  trafficNote += 'Heavy traffic';
+                  trafficNote += "Heavy traffic";
                 } else if (averageSpeed < 40) {
-                  trafficNote += 'Moderate traffic';
+                  trafficNote += "Moderate traffic";
                 } else {
-                  trafficNote += 'Light traffic';
+                  trafficNote += "Light traffic";
                 }
               } else {
-                trafficNote += 'No traffic data available';
+                trafficNote += "No traffic data available";
               }
-              setTrafficNote(trafficNote);
+              setAlertMessage({
+                title: "Traffic Information",
+                content: trafficNote,
+              });
               setShowAlert(true);
             }
             setShowPopup(true); // Show the popup container when the journey starts
@@ -265,6 +293,83 @@ const MapPage: React.FC = () => {
         }
       );
     }
+  };
+
+  const checkIfDestIsAlreadyFavorited = (): boolean => {
+    if (!user) return false;
+
+    const places = searchBoxRefDest.current?.getPlaces();
+    if (!places || !places.length) return false;
+
+    const place = places[0];
+    if (!place.geometry || !place.geometry.location) return false;
+
+    const newFavorite: UserDest = {
+      name: place.name,
+      lat: place.geometry.location.lat(),
+      long: place.geometry.location.lng(),
+    };
+
+    let favorites: UserDest[] = user.favorites || [];
+    const index = favorites.findIndex(
+      (fav) => fav.lat === newFavorite.lat && fav.long === newFavorite.long
+    );
+
+    return index !== -1;
+  };
+
+  const handleAddToFavorites = () => {
+    if (!user) return;
+
+    const places = searchBoxRefDest.current?.getPlaces();
+    if (!places || !places.length) return;
+
+    const place = places[0];
+    if (!place.geometry || !place.geometry.location) return;
+
+    const newFavorite: UserDest = {
+      name: place.name,
+      lat: place.geometry.location.lat(),
+      long: place.geometry.location.lng(),
+    };
+
+    let favorites: UserDest[] = user.favorites || [];
+
+    const alreadyFavorited = checkIfDestIsAlreadyFavorited();
+
+    if (alreadyFavorited) {
+      favorites = favorites.filter(
+        (fav) => !(fav.lat === newFavorite.lat && fav.long === newFavorite.long)
+      );
+    } else {
+      favorites.push(newFavorite);
+    }
+
+    const newUser = { ...user, favorites };
+    setUser(newUser);
+
+    const link = user && user.key ? `users/${user.key}` : "users";
+    const userRef = firebase.database().ref(link);
+
+    userRef
+      .update({ favorites })
+      .then(() => {
+        setAlertMessage({
+          title: "Favorites",
+          content: alreadyFavorited
+            ? "Successfully removed from favorites"
+            : "Successfully added to favorites",
+        });
+        setShowAlert(true);
+        console.info("Successfully updated favorites");
+
+        triggerChangeTextMessage();
+      })
+      .catch((error) => {
+        console.error("Error updating favorites: ", error);
+      });
+
+    console.info(user?.key);
   };
 
   const handleAlternativeRoute = () => {
@@ -277,21 +382,22 @@ const MapPage: React.FC = () => {
           travelMode: google.maps.TravelMode.DRIVING,
           provideRouteAlternatives: true, // Request alternative routes
         },
-        (result, status) =>
-          {
-            if (status === google.maps.DirectionsStatus.OK && result) {
-              // Toggle between the primary route (index 0) and an alternative route (index 1) by modifying the DirectionsResult
-              if (result.routes.length > 1) {
-                const newDirections = { ...result };
-                newDirections.routes = [result.routes[showAlternativeRoute ? 0 : 1]];
-                setDirections(newDirections);
-                setShowAlternativeRoute(!showAlternativeRoute);
-              }
-            } else {
-              console.error(`Error fetching alternative route: ${result}`);
+        (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK && result) {
+            // Toggle between the primary route (index 0) and an alternative route (index 1) by modifying the DirectionsResult
+            if (result.routes.length > 1) {
+              const newDirections = { ...result };
+              newDirections.routes = [
+                result.routes[showAlternativeRoute ? 0 : 1],
+              ];
+              setDirections(newDirections);
+              setShowAlternativeRoute(!showAlternativeRoute);
             }
+          } else {
+            console.error(`Error fetching alternative route: ${result}`);
           }
-        );
+        }
+      );
     }
   };
 
@@ -323,11 +429,11 @@ const MapPage: React.FC = () => {
                 title={marker.name}
                 onClick={() => setSelectedMarker(marker)}
                 icon={{
-                  url: marker.tag?.includes('subsubterminal')
+                  url: marker.tag?.includes("subsubterminal")
                     ? subterminalImage
-                    : marker.tag?.includes('loadZones')
+                    : marker.tag?.includes("loadZones")
                     ? loadZoneImage
-                    : marker.tag?.includes('joda')
+                    : marker.tag?.includes("joda")
                     ? jeepImage
                     : tricycleImage,
                   scaledSize: new window.google.maps.Size(40, 40),
@@ -336,7 +442,10 @@ const MapPage: React.FC = () => {
             ))}
             {selectedMarker && (
               <InfoWindow
-                position={{ lat: selectedMarker.latitude, lng: selectedMarker.longitude }}
+                position={{
+                  lat: selectedMarker.latitude,
+                  lng: selectedMarker.longitude,
+                }}
                 onCloseClick={() => setSelectedMarker(null)}
               >
                 <div>
@@ -350,17 +459,20 @@ const MapPage: React.FC = () => {
             {directions && <DirectionsRenderer directions={directions} />}
             <TrafficLayer />
           </GoogleMap>
-            <div className="settings-button-container">
-              <div className="settings-button" onClick={handleSettingsClick}>
-                <img src={settingsImage} alt="Settings" />
-              </div>
-              <div className="current-location-button-container">
-                <div className="current-location-button" onClick={handleCurrentLocationClick}>
+          <div className="settings-button-container">
+            <div className="settings-button" onClick={handleSettingsClick}>
+              <img src={settingsImage} alt="Settings" />
+            </div>
+            <div className="current-location-button-container">
+              <div
+                className="current-location-button"
+                onClick={handleCurrentLocationClick}
+              >
                 <img src={currentImage} alt="Current Location" />
               </div>
             </div>
             <div className="favorites-button-container">
-                <div className="favorites-button">
+              <div className="favorites-button">
                 <img src={favoritesImage} alt="Current Location" />
               </div>
             </div>
@@ -372,7 +484,11 @@ const MapPage: React.FC = () => {
               }}
               onPlacesChanged={handleStartChanged}
             >
-              <input type="text" placeholder="Starting Location" className="search-input" />
+              <input
+                type="text"
+                placeholder="Starting Location"
+                className="search-input"
+              />
             </StandaloneSearchBox>
             <StandaloneSearchBox
               onLoad={(ref) => {
@@ -380,63 +496,99 @@ const MapPage: React.FC = () => {
               }}
               onPlacesChanged={handleDestChanged}
             >
-              <input type="text" placeholder="Destination" className="search-input" />
+              <input
+                type="text"
+                placeholder="Destination"
+                className="search-input"
+              />
             </StandaloneSearchBox>
           </div>
           <div className="start-journey-button">
             <IonButton onClick={handleStartJourney}>Start Journey</IonButton>
           </div>
           {showPopup && (
-  <div className="popup-container">
-    {/* Fare Estimate */}
-    {selectedMarker && (
-      <div className="fare-estimate-container">
-        <div className="fare-estimate">
-          <h4><center>Fare Estimate</center></h4>
-          <div className="fare-details">
-            {selectedMarker.tag === 'joda' ? (
-              <div className="icon-and-text">
-                <img src={jeepImage} alt="Jeepney" style={{ width: '90px', height: '90px' }} />
-                <p>Estimated Fare: {calculateJeepneyFare(directions)}</p>
-              </div>
-            ) : selectedMarker.tag === 'terminal' ? (
-              <div className="icon-and-text">
-                <img src={tricycleImage} alt="Tricycle" style={{ width: '90px', height: '90px' }} />
-                <p>Estimated Fare: {calculateTricycleFare(directions).normalFare}</p>
-                <p>Special Trip Fare: {calculateTricycleFare(directions).specialTripFare}</p>
-              </div>
-            ) : selectedMarker.tag === 'subsubterminal' ? (
-              <div className="icon-and-text">
-                <img src={tricycleImage} alt="Subterminal" style={{ width: '90px', height: '90px' }} />
-                <p>Estimated Fare: {calculateTricycleFare(directions).normalFare}</p>
-                <p>Special Trip Fare: {calculateTricycleFare(directions).specialTripFare}</p>
-              </div>
-            ): null}
-          </div>
-        </div>
-      </div>
-    )}
+            <div className="popup-container">
+              {/* Fare Estimate */}
+              {selectedMarker && (
+                <div className="fare-estimate-container">
+                  <div className="fare-estimate">
+                    <h4>
+                      <center>Fare Estimate</center>
+                    </h4>
+                    <div className="fare-details">
+                      {selectedMarker.tag === "joda" ? (
+                        <div className="icon-and-text">
+                          <img
+                            src={jeepImage}
+                            alt="Jeepney"
+                            style={{ width: "90px", height: "90px" }}
+                          />
+                          <p>
+                            Estimated Fare: {calculateJeepneyFare(directions)}
+                          </p>
+                        </div>
+                      ) : selectedMarker.tag === "terminal" ? (
+                        <div className="icon-and-text">
+                          <img
+                            src={tricycleImage}
+                            alt="Tricycle"
+                            style={{ width: "90px", height: "90px" }}
+                          />
+                          <p>
+                            Estimated Fare:{" "}
+                            {calculateTricycleFare(directions).normalFare}
+                          </p>
+                          <p>
+                            Special Trip Fare:{" "}
+                            {calculateTricycleFare(directions).specialTripFare}
+                          </p>
+                        </div>
+                      ) : selectedMarker.tag === "subsubterminal" ? (
+                        <div className="icon-and-text">
+                          <img
+                            src={tricycleImage}
+                            alt="Subterminal"
+                            style={{ width: "90px", height: "90px" }}
+                          />
+                          <p>
+                            Estimated Fare:{" "}
+                            {calculateTricycleFare(directions).normalFare}
+                          </p>
+                          <p>
+                            Special Trip Fare:{" "}
+                            {calculateTricycleFare(directions).specialTripFare}
+                          </p>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+              )}
 
-    {/* Alternative Route */}
-    <div className="alternative-route-container">
-      <div className="popup-content">
-        <IonButton onClick={handleAlternativeRoute}>Alternative Route</IonButton>
-      </div>
-    </div>
-    <div className="alternative-route-container">
-      <div className="popup-content">
-        <IonButton>Add to Favorites</IonButton>
-      </div>
-    </div>
-  </div>
-)}
-          </div>
+              {/* Alternative Route */}
+              <div className="alternative-route-container">
+                <div className="popup-content">
+                  <IonButton onClick={handleAlternativeRoute}>
+                    Alternative Route
+                  </IonButton>
+                </div>
+              </div>
+              <div className="alternative-route-container">
+                <div className="popup-content">
+                  <IonButton onClick={handleAddToFavorites}>
+                    {favoritesMessage}
+                  </IonButton>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
         <IonAlert
           isOpen={showAlert}
           onDidDismiss={handleAlertClose}
-          header={'Traffic Information'}
-          message={trafficNote}
-          buttons={[{ text: 'OK', handler: handleAlertClose }]}
+          header={alertMessage.title}
+          message={alertMessage.content}
+          buttons={[{ text: "OK", handler: handleAlertClose }]}
         />
       </IonContent>
     </IonPage>
@@ -446,13 +598,16 @@ const MapPage: React.FC = () => {
 export default MapPage;
 
 // Function to calculate Jeepney fare
-const calculateJeepneyFare = (directions: google.maps.DirectionsResult | null): string => {
-  if (!directions) return '';
+const calculateJeepneyFare = (
+  directions: google.maps.DirectionsResult | null
+): string => {
+  if (!directions) return "";
 
   // Calculate total distance in kilometers
   let totalDistance = 0;
   directions.routes[0].legs.forEach((leg) => {
-    if (leg.distance) { // Check if leg.distance is defined
+    if (leg.distance) {
+      // Check if leg.distance is defined
       totalDistance += leg.distance.value;
     }
   });
@@ -472,13 +627,16 @@ const calculateJeepneyFare = (directions: google.maps.DirectionsResult | null): 
 };
 
 // Function to calculate Tricycle fare
-const calculateTricycleFare = (directions: google.maps.DirectionsResult | null): { normalFare: string, specialTripFare: string } => {
-  if (!directions) return { normalFare: '', specialTripFare: '' };
+const calculateTricycleFare = (
+  directions: google.maps.DirectionsResult | null
+): { normalFare: string; specialTripFare: string } => {
+  if (!directions) return { normalFare: "", specialTripFare: "" };
 
   // Calculate total distance in kilometers
   let totalDistance = 0;
   directions.routes[0].legs.forEach((leg) => {
-    if (leg.distance) { // Check if leg.distance is defined
+    if (leg.distance) {
+      // Check if leg.distance is defined
       totalDistance += leg.distance.value;
     }
   });

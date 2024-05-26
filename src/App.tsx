@@ -11,16 +11,6 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 
-// Initialize Firebase
-firebase.initializeApp({
-  apiKey: "AIzaSyADrNZoDOiIU9YOVETpixE-zFq7_84Cm6s",
-  authDomain: "login-52b0e.firebaseapp.com",
-  projectId: "login-52b0e",
-  storageBucket: "login-52b0e.appspot.com",
-  messagingSenderId: "1052635005495",
-  appId: "1:1052635005495:web:aa8cfb07b53287431bf5b2",
-});
-
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
 /* Basic CSS for apps built with Ionic */
@@ -43,6 +33,19 @@ import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
 import { UserProvider } from "./UserContext";
 
 setupIonicReact();
+
+const config = {
+  apiKey: "AIzaSyADrNZoDOiIU9YOVETpixE-zFq7_84Cm6s",
+  authDomain: "login-52b0e.firebaseapp.com",
+  databaseURL:
+    "https://login-52b0e-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "login-52b0e",
+  storageBucket: "login-52b0e.appspot.com",
+  messagingSenderId: "1052635005495",
+  appId: "1:1052635005495:web:aa8cfb07b53287431bf5b2",
+  measurementId: "G-M4JTYNDKXL",
+};
+export const appp = firebase.initializeApp(config);
 
 const App: React.FC = () => {
   GoogleAuth.initialize({
