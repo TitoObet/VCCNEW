@@ -91,7 +91,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <IonPage>
-      <IonContent>
+      <IonContent className="backgroundLogin">
         <center>
           <div className="logo-container">
             <img src={logoImage} alt="Logo" className="logo" />{" "}
@@ -117,6 +117,7 @@ const LoginPage: React.FC = () => {
             </IonButton>
             <IonButton onClick={signIn}>Login with Google</IonButton>
           </form>
+          <p style={{ textAlign: 'center', color: 'lightgray', marginTop: '10px' }}>Don't have an account yet? <span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => history.push('/register')}><b>Sign Up</b></span></p>
           {error && <IonText color="danger">{error}</IonText>}
         </center>
       </IonContent>
