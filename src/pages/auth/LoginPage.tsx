@@ -115,7 +115,7 @@ const LoginPage: React.FC = () => {
             <IonButton type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Logging In..." : "Login"}
             </IonButton>
-            <IonButton onClick={signIn}>Login with Google</IonButton>
+            <IonButton onClick={signIn} color="danger">Login with Google</IonButton>
           </form>
           <p style={{ textAlign: 'center', color: 'lightgray', marginTop: '10px' }}>Don't have an account yet? <span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => history.push('/register')}><b>Sign Up</b></span></p>
           {error && <IonText color="danger">{error}</IonText>}

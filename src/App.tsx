@@ -47,7 +47,7 @@ setupIonicReact();
 const App: React.FC = () => {
   GoogleAuth.initialize({
     clientId:
-      "230222097435-udsc92eej60drtvhg48svo1nerhiamhr.apps.googleusercontent.com",
+      "1052635005495-f9kq412d8a2i480b08qs504om10vp54o.apps.googleusercontent.com",
     scopes: ["profile", "email"],
     grantOfflineAccess: true,
   });
