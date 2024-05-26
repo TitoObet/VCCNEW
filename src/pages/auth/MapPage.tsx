@@ -421,6 +421,10 @@ const MapPage: React.FC = () => {
     <div className="alternative-route-container">
       <div className="popup-content">
         <IonButton onClick={handleAlternativeRoute}>Alternative Route</IonButton>
+      </div>
+    </div>
+    <div className="alternative-route-container">
+      <div className="popup-content">
         <IonButton onClick={handleAlternativeRoute}>Add to Favorites</IonButton>
       </div>
     </div>
