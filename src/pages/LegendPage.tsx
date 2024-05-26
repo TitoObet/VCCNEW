@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonList, IonItem, IonLabel, IonImg, IonButtons, IonBackButton } from '@ionic/react';
+import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, IonButtons, IonBackButton } from '@ionic/react';
 import './LegendPage.css';
 
 import subterminalImage from "../assets/imgs/sub.png";
@@ -15,9 +15,9 @@ const LegendPage: React.FC = () => {
     { label: "Current Location", src: currentImage },
     { label: "Destination", src: destinationImage },
     { label: "Jeepney Main Terminal", src: jeepImage },
+    { label: "Tricycle Main Terminal", src: tricycleImage },
     { label: "Loading Zones (Jeepneys)", src: loadZoneImage },
-    { label: "Subterminal (Tricycle)", src: subterminalImage },
-    { label: "Tricycle Main Terminal", src: tricycleImage }
+    { label: "Subterminal (Tricycles)", src: subterminalImage },
   ];
 
   return (
@@ -31,14 +31,21 @@ const LegendPage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <IonList className="legend-list">
+        <br></br>
+        <br></br>
+        <br></br>
+        <div className="legend-list">
           {icons.map((icon, index) => (
-            <IonItem key={index} className="legend-item">
-              <IonImg src={icon.src} alt={icon.label} className="legend-icon" />
-              <IonLabel>{icon.label}</IonLabel>
-            </IonItem>
+            <IonCard key={index} className="legend-card">
+              <IonCardHeader>
+                <IonCardTitle className="legend-title"><b>{icon.label}</b></IonCardTitle>
+              </IonCardHeader>
+              <IonCardContent className="legend-content">
+                <IonImg src={icon.src} alt={icon.label} className="legend-icon" />
+              </IonCardContent>
+            </IonCard>
           ))}
-        </IonList>
+        </div>
       </IonContent>
     </IonPage>
   );

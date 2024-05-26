@@ -21,7 +21,7 @@ const HomePage: React.FC = () => {
 
   return (
     <IonPage>
-      <IonContent className="ion-padding ion-content"><center>
+      <IonContent className="backgroundHome"><center>
       <div className="logo-container">
         <img src={logoImage} alt="Logo" className="logo" /> {/* Add the logo image */}
       </div>

@@ -26,7 +26,7 @@ const RegisterPage: React.FC = () => {
 
   return (
     <IonPage>
-      <IonContent className="ion-padding">
+      <IonContent className="backgroundSignup"><center>
         <div className="logo-container">
           <img src={logoImage} alt="Logo" className="logo" /> {/* Add the logo image */}
         </div>
@@ -45,8 +45,9 @@ const RegisterPage: React.FC = () => {
           />
           <IonButton expand="block" onClick={handleRegister}>Register</IonButton>
           {error && <IonText color="light">{error}</IonText>} {/* Render error message */}
-          <p style={{ textAlign: 'center', color: 'medium', marginTop: '10px' }}>Already a member? <span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => history.push('/login')}>Login</span></p>
+          <p style={{ textAlign: 'center', color: 'lightgray', marginTop: '10px' }}>Already a member? <span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => history.push('/login')}><b>Login</b></span></p>
         </div>
+        </center>
       </IonContent>
     </IonPage>
   );

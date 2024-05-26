@@ -366,7 +366,7 @@ const MapPage: React.FC = () => {
               }}
               onPlacesChanged={handleStartChanged}
             >
-              <input type="text" placeholder="Starting place" className="search-input" />
+              <input type="text" placeholder="Starting Location" className="search-input" />
             </StandaloneSearchBox>
             <StandaloneSearchBox
               onLoad={(ref) => {

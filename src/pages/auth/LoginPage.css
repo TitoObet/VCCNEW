@@ -1,9 +1,9 @@
-ion-content {
+.backgroundLogin {
   --background: none;
-  background-image: url('/src/assets/slide.png');
   background-position: center top;
   background-repeat: no-repeat;
   background-size: cover;
+  background-image: url('/src/assets/slide.png');
 }
 
 .login-form {
@@ -23,7 +23,8 @@ ion-input {
 }
 
 ion-button {
-  margin-top: 12px; /* Add margin top to create space between button and input fields */
+  margin-top: 12px;
+  --border-radius: 15px;
 }
 
 .logo-container {

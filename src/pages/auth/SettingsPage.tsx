@@ -91,7 +91,7 @@ const SettingsPage: React.FC = () => {
               <IonIcon slot="icon-only" icon={arrowBack} />
             </IonButton>
           </IonButtons>
-          <IonTitle>Settings</IonTitle>
+          <IonTitle><center>Settings</center></IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="settings-content">
