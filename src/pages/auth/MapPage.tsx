@@ -20,6 +20,7 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonLoading,
 } from "@ionic/react";
 import { useHistory } from "react-router-dom";
 import customMapStyle from "./MapStyle";
@@ -337,11 +338,46 @@ const MapPage: React.FC = () => {
       );
     });
   };
+  const [isLoading, setIsLoading] = useState(false);
 
+  const handleResetMapPage = () => {
+    // Clear current inputs on current location and destination
+    setSearchValue(searchBoxRefStart, "");
+    setSearchValue(searchBoxRefDest, "");
+  
+    // Clear any directions
+    setDirections(null);
+  
+    // Clear destination name
+    setDestinationName("");
+
+    // Clear the destination to its initial value
+    setDestination({ lat: 0, lng: 0 });
+
+    // Close all currently opened popups
+    setShowPopup(false);
+};
+  
+  const setSearchValue = (searchBoxRef: React.RefObject<any>, value: string) => {
+    const inputElement = searchBoxRef.current;
+    if (inputElement instanceof HTMLElement) {
+      const input = inputElement.querySelector('input');
+      if (input instanceof HTMLInputElement) {
+        input.value = value;
+      }
+    }
+  };
+  
   const handleCurrentLocationClick = () => {
+    setIsLoading(true); // Show loading spinner
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 4000); // 3 seconds
     getCurrentPosition()
       .then((position) => {
         setCurrentLocation(position);
+        handleResetMapPage(); // Reset the MapPage after updating the current location
       })
       .catch((error) => {
         console.error("Error getting current location:", error);
@@ -608,6 +644,11 @@ const MapPage: React.FC = () => {
             <div className="settings-button" onClick={handleSettingsClick}>
               <img src={settingsImage} alt="Settings" />
             </div>
+            <IonLoading
+              isOpen={isLoading}
+              message={'Clearing inputs...'}
+              cssClass='loading-custom-class'
+            />
             <div className="current-location-button-container">
               <div
                 className="current-location-button"
@@ -647,12 +688,13 @@ const MapPage: React.FC = () => {
           </IonPopover>
 
           <div className="search-box-container">
-            <StandaloneSearchBox
-              onLoad={(ref) => {
-                searchBoxRefStart.current = ref;
-              }}
-              onPlacesChanged={handleStartChanged}
-            >
+          <StandaloneSearchBox
+            onLoad={(ref) => (searchBoxRefStart.current = ref)}
+            onPlacesChanged={handleStartChanged}
+            options={{
+              componentRestrictions: { country: "PH" },
+            } as any}
+          >
               <input
                 type="text"
                 placeholder="Current Location"
@@ -660,10 +702,11 @@ const MapPage: React.FC = () => {
               />
             </StandaloneSearchBox>
             <StandaloneSearchBox
-              onLoad={(ref) => {
-                searchBoxRefDest.current = ref;
-              }}
+              onLoad={(ref) => (searchBoxRefDest.current = ref)}
               onPlacesChanged={handleDestChanged}
+              options={{
+                componentRestrictions: { country: "PH" },
+              } as any}
             >
               <input
                 type="text"
