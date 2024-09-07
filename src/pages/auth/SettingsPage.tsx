@@ -23,10 +23,10 @@ import userDefaultImage from "../../assets/imgs/user.png";
 import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
 import { UserType, useUser } from "../../UserContext";
 
-import termsIcon from "../../assets/imgs/terms.png";
-import legendIcon from "../../assets/imgs/legend.png";
-import tutorialIcon from "../../assets/imgs/tutorial.png";
-import logoutIcon from "../../assets/imgs/logout.png";
+import termsIcon from "../../assets/imgs/Termsw.png";
+import legendIcon from "../../assets/imgs/Legendw.png";
+import tutorialIcon from "../../assets/imgs/Tutorialw.png";
+import logoutIcon from "../../assets/imgs/Logoutw.png";
 
 const SettingsPage: React.FC = () => {
   const history = useHistory();

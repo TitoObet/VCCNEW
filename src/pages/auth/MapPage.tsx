@@ -77,7 +77,7 @@ const MapPage: React.FC = () => {
   const [showAlternativeRoute, setShowAlternativeRoute] = useState(false);
   const [fareEstimate, setFareEstimate] = useState<string | null>(null);
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyCinM8IcwmrFy5Y4ibwLB4_kHaGQNmsddE",
+    googleMapsApiKey: "AIzaSyAq-KIuqeTGmtUSfk0rFyqatGQfcg4X_BI",
     libraries: ["places"],
   });
   const searchBoxRefStart = useRef<google.maps.places.SearchBox | null>(null);
@@ -667,25 +667,43 @@ const MapPage: React.FC = () => {
             </div>
           </div>
           <IonPopover
-            isOpen={popoverOpen}
-            onDidDismiss={() => setPopoverOpen(false)}
-          >
-            <IonList>
-              {user?.favorites?.map((item, index) => (
-                <IonItem
-                  key={index}
-                  onClick={() => {
-                    setIsFavorite(true);
-                    setDestination({ lat: item.lat, lng: item.long });
-                    setDestinationName(item.name || "");
-                    setPopoverOpen(false);
-                  }}
-                >
-                  <IonLabel>{item.name}</IonLabel>
-                </IonItem>
-              ))}
-            </IonList>
-          </IonPopover>
+  isOpen={popoverOpen}
+  onDidDismiss={() => setPopoverOpen(false)}
+  style={{
+    '--width': '80%', // Adjust the width as needed
+    '--max-height': '80vh', // Adjust the max height if needed
+    '--top': '30%', // Adjust this percentage to move the popover higher or lower
+    '--left': '50%',
+    '--transform': 'translate(-50%, -30%)' // Center horizontally and adjust vertical position
+  }}
+>
+  {/* Scrollable List Container */}
+  <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
+    <IonList>
+      {user?.favorites?.map((item, index) => (
+        <IonItem
+          key={index}
+          onClick={() => {
+            setIsFavorite(true);
+            setDestination({ lat: item.lat, lng: item.long });
+            setDestinationName(item.name || "");
+            setPopoverOpen(false);
+          }}
+        >
+          <IonLabel>{item.name}</IonLabel>
+        </IonItem>
+      ))}
+    </IonList>
+  </div>
+
+  {/* Add Close Button at the Bottom */}
+  <div style={{ padding: '10px', textAlign: 'center' }}>
+    <IonButton onClick={() => setPopoverOpen(false)} color="primary">
+      Close
+    </IonButton>
+  </div>
+</IonPopover>
+
 
           <div className="search-box-container">
           <StandaloneSearchBox
