@@ -2,26 +2,26 @@ import React from 'react';
 
 const customMapStyle =[
     {
-        "featureType": "all",
+        "featureType": "administrative",
         "elementType": "labels.text.fill",
         "stylers": [
-            { "saturation": 36 },
-            { "color": "#ffffff" },
-            { "lightness": 40 }
+            {
+                "color": "#686868"
+            }
         ]
     },
     {
-        "featureType": "all",
-        "elementType": "labels.text.stroke",
+        "featureType": "landscape",
+        "elementType": "all",
         "stylers": [
-            { "visibility": "on" },
-            { "color": "#000000" },
-            { "lightness": 16 }
+            {
+                "color": "#f2f2f2"
+            }
         ]
     },
     {
-        "featureType": "all",
-        "elementType": "labels.icon",
+        "featureType": "poi",
+        "elementType": "all",
         "stylers": [
             {
                 "visibility": "off"
@@ -29,53 +29,23 @@ const customMapStyle =[
         ]
     },
     {
-        "featureType": "administrative",
-        "elementType": "geometry.fill",
+        "featureType": "road",
+        "elementType": "all",
         "stylers": [
             {
-                "color": "#000000"
+                "saturation": -100
             },
             {
-                "lightness": 20
+                "lightness": 45
             }
         ]
     },
     {
-        "featureType": "administrative",
-        "elementType": "geometry.stroke",
+        "featureType": "road.highway",
+        "elementType": "all",
         "stylers": [
             {
-                "color": "#000000"
-            },
-            {
-                "lightness": 17
-            },
-            {
-                "weight": 1.2
-            }
-        ]
-    },
-    {
-        "featureType": "landscape",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#000000"
-            },
-            {
-                "lightness": 20
-            }
-        ]
-    },
-    {
-        "featureType": "poi",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#000000"
-            },
-            {
-                "lightness": 21
+                "visibility": "simplified"
             }
         ]
     },
@@ -84,10 +54,7 @@ const customMapStyle =[
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#000000"
-            },
-            {
-                "lightness": 17
+                "lightness": "-22"
             }
         ]
     },
@@ -96,13 +63,64 @@ const customMapStyle =[
         "elementType": "geometry.stroke",
         "stylers": [
             {
-                "color": "#000000"
+                "saturation": "11"
             },
             {
-                "lightness": 29
+                "lightness": "-51"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "labels.text",
+        "stylers": [
+            {
+                "saturation": "3"
             },
             {
-                "weight": 0.2
+                "lightness": "-56"
+            },
+            {
+                "weight": "2.20"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "lightness": "-52"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "labels.text.stroke",
+        "stylers": [
+            {
+                "weight": "6.13"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "labels.icon",
+        "stylers": [
+            {
+                "lightness": "-10"
+            },
+            {
+                "gamma": "0.94"
+            },
+            {
+                "weight": "1.24"
+            },
+            {
+                "saturation": "-100"
+            },
+            {
+                "visibility": "off"
             }
         ]
     },
@@ -111,46 +129,79 @@ const customMapStyle =[
         "elementType": "geometry",
         "stylers": [
             {
-                "color": "#000000"
+                "lightness": "-16"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "saturation": "-41"
             },
             {
-                "lightness": 18
+                "lightness": "-41"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "labels.text.stroke",
+        "stylers": [
+            {
+                "weight": "5.46"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "labels.icon",
+        "stylers": [
+            {
+                "visibility": "off"
             }
         ]
     },
     {
         "featureType": "road.local",
-        "elementType": "geometry",
+        "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#000000"
+                "weight": "0.72"
             },
             {
-                "lightness": 16
+                "lightness": "-16"
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "lightness": "-37"
             }
         ]
     },
     {
         "featureType": "transit",
-        "elementType": "geometry",
+        "elementType": "all",
         "stylers": [
             {
-                "color": "#000000"
-            },
-            {
-                "lightness": 19
+                "visibility": "off"
             }
         ]
     },
     {
         "featureType": "water",
-        "elementType": "geometry",
+        "elementType": "all",
         "stylers": [
             {
-                "color": "#000000"
+                "color": "#b7e4f4"
             },
             {
-                "lightness": 17
+                "visibility": "on"
             }
         ]
     }

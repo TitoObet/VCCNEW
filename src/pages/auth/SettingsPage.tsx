@@ -9,7 +9,6 @@ import {
   IonButton,
   IonIcon,
   IonAvatar,
-  IonRouterLink,
   IonLabel,
   IonCard,
   IonCardContent,
@@ -18,8 +17,8 @@ import { arrowBack } from "ionicons/icons";
 import { useHistory } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import "./SettingsPage.css"; // Import the CSS file
-import userDefaultImage from "../../assets/imgs/user.png";
+import "./SettingsPage.css";
+import userDefaultImage from "../../assets/imgs/user.png"; // Import the default user image
 import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
 import { UserType, useUser } from "../../UserContext";
 
@@ -33,17 +32,18 @@ const SettingsPage: React.FC = () => {
   const [userEmail, setUserEmail] = useState<string>();
   const [userName, setUserName] = useState<string>();
   const [userImage, setUserImage] = useState<string>();
-
-  const { user } = useUser();
+  
+  const { user, setUser } = useUser(); // Access user context
 
   useEffect(() => {
     if (user) {
-      console.info("User");
-      console.info(user);
-      if (user.type === UserType.Firebase) {
-        setUserImage(userDefaultImage);
+      // Check if the user is a guest
+      if (user.type === UserType.Guest) {
+        setUserImage(userDefaultImage); // Use default image for guest users
+      } else if (user.type === UserType.Firebase) {
+        setUserImage(userDefaultImage); // Use default image for firebase users
       } else {
-        setUserImage(user.image);
+        setUserImage(user.image); // Use Google Auth user image
       }
       setUserName(user.name);
       setUserEmail(user.email);
@@ -66,27 +66,33 @@ const SettingsPage: React.FC = () => {
     history.push("/tutorial");
   };
 
+  const handleOfficersClick = () => {
+    history.push("/officers");
+  };
+
   const handleLogoutClick = async () => {
     try {
-      console.info("Start here");
-      console.info(user);
       if (user) {
         if (user.type === UserType.Firebase) {
-          console.info("Firebase logout");
           await firebase.auth().signOut();
-          history.push("/login");
         } else if (user.type === UserType.GoogleAuth) {
-          console.info("Google logout");
           await GoogleAuth.signOut();
-          history.push("/login");
-        } else {
-          console.warn("Unknown user type");
         }
+
+        setUser(null);
+        history.push("/login");
       } else {
         console.warn("User not found");
       }
     } catch (error) {
       console.error("Error logging out:", error);
+    }
+  };
+
+  // New function to handle profile click
+  const handleProfileClick = () => {
+    if (user?.type === UserType.Firebase) {
+      history.push("/profile");
     }
   };
 
@@ -103,7 +109,7 @@ const SettingsPage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="settings-content">
-        <IonCard className="profile-card">
+        <IonCard className="profile-card" button={user?.type === UserType.Firebase} onClick={handleProfileClick}>
           <IonCardContent className="profile-content">
             <IonAvatar slot="start">
               <img src={userImage} alt="Profile" />
@@ -115,7 +121,6 @@ const SettingsPage: React.FC = () => {
           </IonCardContent>
         </IonCard>
 
-        {/* Other Settings */}
         <IonButton onClick={handleTermsClick} className="menu-button">
           <img src={termsIcon} alt="Terms" className="icon-image" />
           <IonLabel>Terms and Conditions</IonLabel>
@@ -127,6 +132,10 @@ const SettingsPage: React.FC = () => {
         <IonButton onClick={handleTutorialClick} className="menu-button">
           <img src={tutorialIcon} alt="Tutorial" className="icon-image" />
           <IonLabel>Tutorial</IonLabel>
+        </IonButton>
+        <IonButton onClick={handleOfficersClick} className="menu-button">
+          <img src={tutorialIcon} alt="Officers" className="icon-image" />
+          <IonLabel>Officers</IonLabel>
         </IonButton>
         <IonButton onClick={handleLogoutClick} className="menu-button">
           <img src={logoutIcon} alt="Logout" className="icon-image" />

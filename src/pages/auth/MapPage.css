@@ -33,28 +33,30 @@
 }
 
 .start-journey-button {
-  position: absolute;
-  top: 10%; /* Adjust the distance from the bottom */
-  left: 50%; /* Position it horizontally in the middle */
+  position: fixed;
+  left: 50%;
   transform: translateX(-50%);
-  z-index: 100; /* Ensure it's above other elements */
+  z-index: 1000;
+  transition: top 0.3s ease-in-out; /* Smooth transition for position change */
 }
 
 .start-journey-button ion-button {
-  background-color: transparent; /* Set the background to transparent */
+  background-color: transparent;
   color: white;
   padding: 10px 20px;
-  border: 2px solid transparent; /* Remove the border by setting it to transparent */
+  border: 2px solid transparent;
   border-radius: 5px;
   cursor: pointer;
+  outline: none;
+  box-shadow: none;
 }
 
 .start-journey-button ion-button:hover {
-  background-color: #007bff; /* Change color on hover */
-  border-color: transparent; /* Ensure border remains transparent on hover */
+  background-color: #007bff;
+  border-color: transparent;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
 }
-
-
 
 
 .search-input {
@@ -120,20 +122,23 @@
 }
 
 
-.favorites-btn {
-  width: 30px; /* Adjust width as needed */
-  height: 20px; /* Adjust height as needed */
+.favorites-btn-container {
   position: absolute;
-  top: 11vw; /* Adjust top position as needed */
-  left: -79vw; /* Use viewport width units for left position */
-  z-index: 1000; /* Ensure the button appears on top of other elements */
+  top: 18px; /* Keep it in line with the settings button */
+  left: 20px; /* Move it to the left side of the screen */
+  z-index: 1000; /* Ensure it stays on top of other elements */
 }
 
-.favorites-btn img {
-  width: 30px;
-  height: 30px;
+.favorites-btn {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.favorites-btn ion-icon {
+  font-size: 35px; /* Adjust the size of the favorites icon */
+}
 
 .settings-button-container {
   position: absolute;
@@ -142,16 +147,15 @@
   z-index: 1000; /* Ensure the button appears on top of other elements */
 }
 
-.settings-button img {
-  width: 35px; /* Adjust width as needed */
-  height: 35px; /* Adjust height as needed */
-}
-
 .settings-button {
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.settings-button ion-icon {
+  font-size: 35px; /* Adjust the size of the settings icon */
 }
 
 /* Define styles for the modal */
@@ -178,18 +182,40 @@
   max-width: 300px;
 }
 
-.popup-container {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+.gps-button-container {
+  position: fixed; /* Fixed position for better placement */
+  bottom: 30px; /* Default position at the bottom of the screen */
+  right: 20px; /* Position it towards the right */
+  z-index: 2000; /* Ensure it's above other elements */
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  transition: bottom 0.3s ease; /* Smooth transition for position change */
+}
+
+.gps-button-container.popup-visible {
+  bottom: 250px; /* Move it above the popup */
+  right: 20;
+}
+
+
+.popup-container {
+  position: fixed; /* Fixes the container to the viewport */
+  bottom: 0; /* Aligns the container to the bottom */
+  left: 0; /* Aligns the container to the left */
+  width: 100%; /* Full width of the viewport */
+  display: flex; /* Enables flexbox for layout */
+  flex-direction: column; /* Arranges children in a column */
+  justify-content: center; /* Centers the content vertically */
   background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
   padding: 10px 0; /* Padding for better spacing */
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+  border-radius: 15px 15px 0 0; /* Rounded corners at the top */
+  overflow: hidden; /* Ensures content does not overflow */
+  z-index: 1000; /* Ensure the popup is below the GPS button */
 }
+
+
 
 .popup-content {
   display: flex;
@@ -231,6 +257,15 @@
 .add-to-fav-btn {
   --background: #F4BC1C;
 }
+
+.popoverAlign {
+  --offset-y: -300px;
+}
+
+.ion-button-center {
+  margin: '0 auto';
+}
+
 
 
 /* .loading-custom-class .loading-wrapper {

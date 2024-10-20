@@ -1,0 +1,30 @@
+.joda-terminal-button {
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center children horizontally */
+    justify-content: center; /* Center children vertically */
+    padding: 16px; /* Add some padding */
+    background: #fff; /* Background color */
+    border: 1px solid #ddd; /* Border */
+    border-radius: 8px; /* Rounded corners */
+    margin: 10px; /* Spacing between buttons */
+    cursor: pointer; /* Change cursor to pointer */
+    transition: background 0.3s; /* Transition for hover effect */
+  }
+  
+  .joda-terminal-button:hover {
+    background: #f0f0f0; /* Change background on hover */
+  }
+  
+  .joda-name {
+    margin: 0;
+    text-align: center; /* Center the address */
+    color: #ca2222; 
+  }
+
+  .joda-address {
+    margin: 0;
+    text-align: center; /* Center the address */
+    color: #666; /* Lighter color for the address */
+  }
+  

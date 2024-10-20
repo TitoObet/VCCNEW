@@ -9,13 +9,12 @@ import {
 import { useHistory } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import "firebase/compat/firestore";
-import "./LoginPage.css";
+import "./LoginPage.css"; 
 import logoImage from "../../assets/logo.png";
 import questionImage from "../../assets/imgs/question.png";
-import googleLogo from "../../assets/imgs/google.png"; // Import Google logo
+import googleLogo from "../../assets/imgs/google.png";
 import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
-import { UserType, useUser, User, UserImp, UserDest } from "../../UserContext";
+import { useUser, UserType, UserImp } from "../../UserContext";
 import {
   GoogleAuthProvider,
   getAuth,
@@ -23,28 +22,21 @@ import {
 } from "firebase/auth";
 import { appp } from "../../App";
 
-
-
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false); // For showing loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const history = useHistory();
-
   const { setUser } = useUser();
-
   const auth = getAuth(appp);
 
-  const signIn = async () => {
+  const signInWithGoogle = async () => {
     try {
       const result = await GoogleAuth.signIn();
-      console.info("result", result);
       if (result) {
-        const credential = GoogleAuthProvider.credential(
-          result.authentication.idToken
-        );
-        const loggedOnUser: UserImp = new UserImp(
+        const credential = GoogleAuthProvider.credential(result.authentication.idToken);
+        const loggedOnUser = new UserImp(
           null,
           UserType.GoogleAuth,
           result.name,
@@ -52,15 +44,16 @@ const LoginPage: React.FC = () => {
           result.email,
           null
         );
-
         await signInWithCredential(auth, credential);
-
-        handleFirebaseDatabase(loggedOnUser);
+        await handleFirebaseDatabase(loggedOnUser);
         setUser(loggedOnUser);
+        setEmail("");      // Clear email input field
+        setPassword("");   // Clear password input field
         history.push("/map");
       }
     } catch (error) {
       console.error("Google sign-in failed", error);
+      setError("Failed to sign in with Google. Please try again.");
     }
   };
 
@@ -69,10 +62,10 @@ const LoginPage: React.FC = () => {
       const database = firebase.database();
       const ref = database.ref("users");
       const snapshot = await ref.once("value");
-      const users: { [key: string]: UserImp } | null = snapshot.val();
+      const users = snapshot.val();
+      let userKey = null;
+      let userFavorites = null;
 
-      let userKey: string | null = null;
-      let userFavorites: UserDest[] | null = null;
       if (users) {
         const emailFound = Object.keys(users).some((key) => {
           if (users[key].email === user.email) {
@@ -86,12 +79,11 @@ const LoginPage: React.FC = () => {
         if (!emailFound) {
           const newUser = await ref.push(user);
           user.key = newUser.key;
-          setUser(user);
         } else {
           user.favorites = userFavorites;
           user.key = userKey;
-          setUser(user);
         }
+        setUser(user);
       } else {
         const newUser = await ref.push(user);
         user.key = newUser.key;
@@ -103,25 +95,17 @@ const LoginPage: React.FC = () => {
   };
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent default form submission
-
-    // Check if both email and password are provided
+    e.preventDefault();
     if (!email || !password) {
       setError("Enter both email and password");
-      return; // Exit early if fields are not filled
+      return;
     }
-    setIsSubmitting(true); // Set loading state while submitting
+    setIsSubmitting(true);
     try {
       await firebase.auth().signInWithEmailAndPassword(email, password);
-
-      // Wait for authentication state to be updated
-      await new Promise((resolve) =>
-        firebase.auth().onAuthStateChanged(resolve)
-      );
-
       const user = firebase.auth().currentUser;
       if (user) {
-        const loggedOnUser: UserImp = new UserImp(
+        const loggedOnUser = new UserImp(
           null,
           UserType.Firebase,
           user.displayName || "",
@@ -129,42 +113,48 @@ const LoginPage: React.FC = () => {
           user.email || "",
           null
         );
-        handleFirebaseDatabase(loggedOnUser);
+        await handleFirebaseDatabase(loggedOnUser);
         setUser(loggedOnUser);
+        setEmail("");      // Clear email input field
+        setPassword("");   // Clear password input field
         history.push("/map");
-      } else {
-        console.error("User not found after sign in");
-        setError("An error occurred while logging in. Please try again later.");
       }
     } catch (error: any) {
-      console.error("Login error:", error); // Log the full error object
-      if (error.toString().includes("credential is incorrect")) {
-        setError("Wrong email or password");
-      } else {
-        setError("An error occurred while logging in. Please try again later.");
-      }
+      console.error("Login error:", error);
+      setError("An error occurred while logging in. Please try again.");
     } finally {
-      setIsSubmitting(false); // Reset loading state after submission
+      setIsSubmitting(false);
     }
   };
 
+  const handleGuestLogin = () => {
+    const guestUser = new UserImp(
+      null,
+      UserType.Guest,
+      "Guest User",
+      "",
+      "",
+      null
+    );
+    setUser(guestUser);
+    history.push("/map");
+  };
+
   const handleTutorial = () => {
-    console.log('Tutorial button clicked');
-    history.push('/tutorial');
+    history.push("/tutorial");
   };
 
   return (
     <IonPage>
       <IonContent className="backgroundLogin">
-      <div className="top-right">
+        <div className="top-right">
           <IonButton onClick={handleTutorial} className="question-button">
             <img src={questionImage} alt="Tutorial" />
           </IonButton>
         </div>
         <center>
           <div className="logo-container">
-            <img src={logoImage} alt="Logo" className="logo" />{" "}
-            {/* Add the logo image */}
+            <img src={logoImage} alt="Logo" className="logo" />
           </div>
           <form onSubmit={handleLogin}>
             <IonInput
@@ -174,29 +164,33 @@ const LoginPage: React.FC = () => {
               onIonInput={(e) => setEmail(e.detail.value!)}
               required
             />
-            <IonInput
-              type="password"
-              placeholder="Password"
-              value={password}
-              onIonInput={(e) => setPassword(e.detail.value!)}
-              required
-            />
+            <div className="password-container">
+              <IonInput
+                type="password"
+                placeholder="Password"
+                value={password}
+                onIonInput={(e) => setPassword(e.detail.value!)}
+                required
+              />
+              <br></br><br></br>
+              <p
+                className="forgot-password"
+                onClick={() => history.push("/forgot-password")}
+              >
+                Forgot Password?
+              </p>
+            </div>
             <IonButton type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Logging In..." : "Login"}
             </IonButton>
-            {/* Add Google logo and text inside the button */}
-            <IonButton onClick={signIn} color="danger">
-              Login with Google{" "}
-              <img src={googleLogo} alt="Google Logo" className="google-logo" />
-            </IonButton>
           </form>
-          <p
-            style={{
-              textAlign: "center",
-              color: "lightgray",
-              marginTop: "10px",
-            }}
-          >
+          <IonButton onClick={signInWithGoogle} color="danger">
+            Login with Google <img src={googleLogo} alt="Google Logo" className="google-logo" />
+          </IonButton>
+          <IonButton onClick={handleGuestLogin} color="light">
+            Login as Guest
+          </IonButton>
+          <p style={{ textAlign: "center", color: "lightgray", marginTop: "10px" }}>
             Don't have an account yet?{" "}
             <span
               style={{ textDecoration: "underline", cursor: "pointer" }}

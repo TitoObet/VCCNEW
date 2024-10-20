@@ -1,0 +1,21 @@
+.toda-page-container {
+    padding: 16px;
+  }
+  
+  .toda-card {
+    margin: 8px 0;
+    cursor: pointer;
+  }
+  
+  .toda-name {
+    margin: 0;
+    font-weight: bold; /* Make the name bold */
+    color: #000000; /* Darker font color for the name */
+  }
+  
+  .toda-address {
+    margin: 0;
+    text-align: center; /* Center the address */
+    color: #666; /* Lighter color for the address */
+  }
+  

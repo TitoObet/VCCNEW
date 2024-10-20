@@ -1,57 +1,73 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
+  IonContent,
+  IonInput,
+  IonButton,
+  IonText,
   IonPage,
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonContent,
   IonButtons,
-  IonButton,
   IonIcon,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonInput,
 } from "@ionic/react";
 import { arrowBack } from "ionicons/icons";
 import { useHistory } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import "./ProfilePage.css"; // Import the CSS file
-import { useUser } from "../../UserContext";
+import "./ProfilePage.css"; // Ensure this file contains your styles
+import logoImage from "../../assets/logo.png"; // Ensure the logo path is correct
+import questionImage from "../../assets/imgs/question.png"; // If needed, adjust this path
 
 const ProfilePage: React.FC = () => {
   const history = useHistory();
-  const [editMode, setEditMode] = useState(false);
-  const [name, setName] = useState<string>("John Doe");
-  const [phoneNumber, setPhoneNumber] = useState<string>("1234567890");
-  const [password, setPassword] = useState<string>("********"); // Encrypted password, only shown as asterisks
-  const [email, setEmail] = useState<string>();
-
-  const { user } = useUser();
-
-  useEffect(() => {
-    if (user) {
-      setName(user.name);
-      setEmail(user.email);
-      // setPhoneNumber()
-    }
-  }, []);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleBackClick = () => {
-    history.goBack(); // Go back to the previous page
+    setSuccess(""); // Clear success message when going back
+    setError(""); // Optionally clear error message as well
+    history.push("/settings");
   };
 
-  const handleEditProfileClick = () => {
-    setEditMode(true); // Enable edit mode
-  };
+  const handleChangePassword = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setError("All fields are required");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError("New passwords do not match");
+      return;
+    }
+    setIsSubmitting(true);
 
-  const handleConfirmClick = async () => {
     try {
-      // Perform update logic here (e.g., update user data in the database)
-      setEditMode(false); // Disable edit mode after confirming changes
-    } catch (error) {
-      console.error("Error updating profile:", error);
+      const user = firebase.auth().currentUser;
+      if (user) {
+        // Re-authenticate user with current password
+        const credential = firebase.auth.EmailAuthProvider.credential(user.email!, currentPassword);
+        await user.reauthenticateWithCredential(credential);
+        await user.updatePassword(newPassword);
+        setSuccess("Password updated successfully");
+
+        // Clear the input fields after successful password change
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      } else {
+        setError("User not logged in");
+      }
+    } catch (error: any) {
+      setError("Error updating password. Please check your current password and try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -67,44 +83,46 @@ const ProfilePage: React.FC = () => {
           <IonTitle>Profile</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent className="profile-content">
-        <IonList className="profile-list">
-          <IonItem>
-            <IonLabel position="floating">Name</IonLabel>
-            <IonInput
-              value={name}
-              disabled={!editMode}
-              onIonChange={(e) => setName(e.detail.value || "")}
-            />
-          </IonItem>
-          <IonItem>
-            <IonLabel position="floating">Email</IonLabel>
-            <IonInput value={email} disabled={true} />
-          </IonItem>
-          <IonItem>
-            <IonLabel position="floating">Phone Number</IonLabel>
-            <IonInput
-              value={phoneNumber}
-              disabled={!editMode}
-              onIonChange={(e) => setPhoneNumber(e.detail.value || "")}
-            />
-          </IonItem>
-          <IonItem>
-            <IonLabel position="floating">Password</IonLabel>
+      <IonContent className="backgroundLogin">
+        <div className="top-right">
+          <IonButton onClick={() => {}} className="question-button">
+            <img src={questionImage} alt="Tutorial" />
+          </IonButton>
+        </div>
+        <center>
+          <div className="logo-container">
+            <img src={logoImage} alt="Logo" className="logo" />
+          </div>
+          <h2 style={{ textAlign: "center" }}><br />Change Password</h2>
+          <form onSubmit={handleChangePassword}>
             <IonInput
               type="password"
-              value={password}
-              disabled={!editMode}
-              onIonChange={(e) => setPassword(e.detail.value || "")}
+              placeholder="Current Password"
+              value={currentPassword}
+              onIonInput={(e) => setCurrentPassword(e.detail.value!)}
+              required
             />
-          </IonItem>
-        </IonList>
-        <IonButton
-          expand="block"
-          onClick={editMode ? handleConfirmClick : handleEditProfileClick}
-        >
-          {editMode ? "Confirm" : "Edit Profile"}
-        </IonButton>
+            <IonInput
+              type="password"
+              placeholder="New Password"
+              value={newPassword}
+              onIonInput={(e) => setNewPassword(e.detail.value!)}
+              required
+            />
+            <IonInput
+              type="password"
+              placeholder="Confirm New Password"
+              value={confirmPassword}
+              onIonInput={(e) => setConfirmPassword(e.detail.value!)}
+              required
+            />
+            <IonButton type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Changing..." : "Change Password"}
+            </IonButton>
+          </form>
+          {success && <IonText color="success">{success}</IonText>}
+          {error && <IonText color="danger">{error}</IonText>}
+        </center>
       </IonContent>
     </IonPage>
   );

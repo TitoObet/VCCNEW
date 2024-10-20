@@ -7,7 +7,6 @@ export interface User {
   image: string;
   email: string;
   favorites: UserDest[] | null;
-  // Add other user properties as needed
 }
 
 export interface UserDest {
@@ -44,6 +43,7 @@ export class UserImp implements User {
 export enum UserType {
   Firebase,
   GoogleAuth,
+  Guest,
 }
 
 interface UserContextType {

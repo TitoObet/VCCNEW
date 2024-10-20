@@ -1,0 +1,50 @@
+.officers-page-container {
+    padding: 20px;
+    text-align: center;
+}
+
+.officers-page-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.officers-section {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+}
+
+.officers-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.officers-button:hover {
+    transform: scale(1.05);
+}
+
+.officers-button img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+.officers-button span {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.officers-background {
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 20px;
+}
+
+ion-content.officers-content {
+    --background: linear-gradient(to bottom, #ffffff, #bdecff) !important;
+}

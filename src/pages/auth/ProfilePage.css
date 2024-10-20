@@ -1,15 +1,91 @@
 /* Add padding to IonContent to ensure content is pushed down */
 .profile-content {
-    --padding-top: 56px; /* Adjust this value to ensure it's below the header */
-  }
-  
-  /* Style the list items to have a margin and some padding */
-  .profile-list ion-item {
-    margin-bottom: 16px;
-  }
-  
-  /* Style the edit/confirm button */
-  ion-button {
-    margin: 16px;
-  }
-  
+  --padding-top: 72px; /* Ensure it's below the header */
+}
+
+/* Style the header */
+ion-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: #fff; /* Ensure header background is visible */
+}
+
+/* Add some padding to the toolbar to position the title and back button */
+ion-toolbar {
+  padding: 0 16px;
+  --background: #fff; /* Ensure toolbar background is visible */
+}
+
+/* Style the buttons in the toolbar */
+ion-buttons {
+  display: flex;
+  align-items: center;
+}
+
+/* Style the title to be centered */
+ion-title {
+  flex: 1;
+  text-align: center;
+}
+
+/* Style for input fields */
+.profile-input {
+  margin-bottom: 15px;
+  width: calc(100% - 32px); /* Ensure the input takes full width with padding */
+  max-width: 400px;
+  color: black; /* Ensure the text color is black */
+}
+
+/* Ensure input text color is black */
+.profile-input {
+  color: black !important; /* Ensure the text color is black */
+}
+
+/* Ensure the placeholder text is visible */
+.profile-input::placeholder {
+  color: gray; /* Change this to any color you prefer */
+}
+
+/* Change the caret color to black */
+.profile-input::-webkit-input-placeholder {
+  color: gray; /* Change this to any color you prefer */
+}
+
+.profile-input:-ms-input-placeholder { /* IE 11 */
+  color: gray; /* Change this to any color you prefer */
+}
+
+.profile-input::placeholder { /* Firefox 19+ */
+  color: gray; /* Change this to any color you prefer */
+}
+
+/* Style the Change Password text */
+h2 {
+  text-align: center; /* Center the Change Password text */
+}
+
+/* Style the Change Password button */
+.profile-change-password-button {
+  margin-top: 20px;
+  width: calc(100% - 32px); /* Ensure button takes full width with padding */
+  max-width: 400px;
+}
+
+/* Style for success and error messages */
+ion-text {
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Settings page background gradient */
+ion-content.profile-content {
+  --background: linear-gradient(to bottom, #ffffff, #bdecff) !important;
+}
+
+/* ION BUTTON CSS NA NAGING GLOBAL XD */
+ion-button {
+  margin: 16px;
+}

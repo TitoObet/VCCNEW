@@ -15,11 +15,11 @@
 }
 
 ion-input {
-  --padding-start: 12px; /* Increase padding for better spacing */
-  --padding-end: 12px; /* Increase padding for better spacing */
+  --padding-start: 12px;
+  --padding-end: 12px;
   --padding-top: 8px;
   --padding-bottom: 8px;
-  margin-bottom: 12px; /* Add margin bottom to create space between input fields */
+  margin-bottom: 12px;
 }
 
 ion-button {
@@ -30,40 +30,67 @@ ion-button {
 .logo-container {
   display: flex;
   justify-content: center;
-  margin-top: 50%; /* Add margin to the top */
-  margin-bottom: 20px; /* Add margin to the bottom */
+  margin-top: 50%;
+  margin-bottom: 20px;
 }
 
 .logo {
-  width: 125px; /* Adjust the width of the image as needed */
-  height: auto; /* Maintain aspect ratio */
+  width: 125px;
+  height: auto;
 }
 
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 10px; /* Add space between each input */
+  gap: 10px;
   max-width: 400px;
   margin: auto;
 }
 
-
 ion-input[type="email"],
 ion-input[type="password"] {
-  width: 80%; /* Adjust the width as needed */
-  margin: auto; /* Center the input */
+  width: 80%;
+  margin: auto;
   --highlight-color: #Ffffff;
   color: #Ffffff;
   font-size: large;
 }
 
 ion-button {
-  --highlight-color: blue; /* Change the color here */
-  margin-left: 9%; /* Center the input */
+  --highlight-color: blue;
+  margin-left: 9%;
 }
 
 .google-logo {
-  width: 20px; /* Adjust the width as needed */
-  height: auto; /* Maintain aspect ratio */
+  width: 20px;
+  height: auto;
   margin-left: 10px;
+}
+
+.password-container {
+  position: relative;
+  width: 80%; /* Matches the width of the input fields */
+  margin: auto;
+}
+
+.forgot-password {
+  position: absolute;
+  right: 0;
+  top: 70%; /* Centers the text vertically between the input and button */
+  transform: translateY(-50%);
+  color: lightgray;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 100%;
+  margin-top: 10px; /* Add some space above the login button */
 }
